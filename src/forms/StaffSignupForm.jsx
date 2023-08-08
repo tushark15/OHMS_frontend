@@ -31,7 +31,7 @@ const StaffSignupForm = (props) => {
     >
       <Card
         style={{ width: "45vw", height: "auto" }}
-        className="shadow-lg rounded-3 form-card border border-0"
+        className=" "
       >
         <Card.Body className="mt-2">
           <Card.Title className="mb-4">Signup</Card.Title>

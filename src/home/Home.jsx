@@ -1,10 +1,6 @@
 import React from "react";
-
 import Card from "react-bootstrap/Card";
-import Button from "react-bootstrap/Button";
-
 import student from "../assets/student.jpg";
-
 const Home = () => {
   return (
     <div
