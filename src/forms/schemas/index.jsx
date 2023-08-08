@@ -1,5 +1,5 @@
 import { object, string, number, boolean, array } from "yup";
-import { subjects } from "../classAndSubject";
+import { subjects } from "../ClassAndSubject";
 import { classes } from "../schoolForm";
 
 export const staffLoginSchema = object({

@@ -5,7 +5,7 @@ import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Card from "react-bootstrap/Card";
 import MultiSelect from "../components/MultiSelect";
-import ClassAndSubject from "./classAndSubject";
+import ClassAndSubject from "./ClassAndSubject";
 export const classes = [
   { value: "Nursery", label: "Nursery" },
   { value: "KG", label: "KG" },
