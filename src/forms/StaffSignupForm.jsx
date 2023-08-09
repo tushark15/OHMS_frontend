@@ -49,7 +49,7 @@ const StaffSignupForm = (props) => {
                     onChange={handleChange}
                     onBlur={handleBlur}
                     isValid={touched.name && !errors.name}
-                    isInvalid={!!errors.email && touched.email}
+                    isInvalid={!!errors.name && touched.name}
                   />
                   <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                   <Form.Control.Feedback type="invalid">

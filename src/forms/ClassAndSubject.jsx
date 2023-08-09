@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Col, Form, Row } from "react-bootstrap";
+import { Card, Col, Form, Row } from "react-bootstrap";
 import MultiSelect from "../components/MultiSelect";
 
 export const subjects = [
@@ -31,10 +31,18 @@ const ClassAndSubject = ({ selectedClasses, name }) => {
 
   return (
     <>
+      <h4>Add subjects for each Class</h4>
       {selectedClasses.map((selectedClass) => (
-        <Row key={selectedClass.value} className="mb-4">
-          <Form.Group as={Col} controlId={`subjects-${selectedClass.value}`}>
-            <Form.Label>{selectedClass.label} Subjects</Form.Label>
+        <Row key={selectedClass.value} className="m-4">
+          <Form.Group
+            as={Col}
+            controlId={`subjects-${selectedClass.value}`}
+            className="d-flex flex-row justify-content-start"
+            style={{ gap: "40vw", marginLeft: "5vw" }}
+          >
+            <div style={{ width: "8vw" }}>
+              <p>{selectedClass.label} Subjects</p>
+            </div>
             <MultiSelect
               defaultOptions={subjects}
               selectedValues={
@@ -44,6 +52,7 @@ const ClassAndSubject = ({ selectedClasses, name }) => {
                 handleSubjects(selectedClass, selectedOptions)
               }
               name={name}
+              style={{ width: "20vw" }}
             />
           </Form.Group>
         </Row>

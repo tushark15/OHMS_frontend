@@ -4,6 +4,7 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { useFormik } from "formik";
 import { staffLoginSchema } from "./schemas";
+import { useNavigate } from "react-router-dom";
 
 const initialValues = {
   email: "",
@@ -12,12 +13,13 @@ const initialValues = {
 };
 
 const StaffLoginForm = (props) => {
+  const navigate = useNavigate();
   const { values, handleChange, handleSubmit, handleBlur, touched, errors } =
     useFormik({
       initialValues: initialValues,
       validationSchema: staffLoginSchema,
       onSubmit: (values) => {
-        console.log(values);
+        navigate("/staff/school");
       },
     });
 

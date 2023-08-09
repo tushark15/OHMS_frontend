@@ -33,8 +33,8 @@ export const studentLoginSchema = object({
 });
 
 export const schoolSchema = object({
-  schoolName: string().required(),
-  schoolAddress: string().required(),
+  schoolName: string().required("School Name is required"),
+  schoolAddress: string().required("School Address is required"),
   schoolContact: number()
     .test(
       "len",
@@ -44,14 +44,14 @@ export const schoolSchema = object({
         (val.toString().length === 8 || val.toString().length === 10)
     )
     .required(),
-  schoolEmail: string().email().required(),
+  schoolEmail: string().email().required("School Email is required"),
   schoolEmailSuffix: string()
     .test(
       "valid-suffix",
       "Invalid email suffix. Suffix should be in the form 'example.in'",
       (val) => /^[^.]+\..+$/.test(val)
     )
-    .required(),
+    .required("School Email Suffix is required"),
   schoolClasses: array()
     .of(
       object({
