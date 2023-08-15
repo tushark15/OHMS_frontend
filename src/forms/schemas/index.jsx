@@ -1,6 +1,6 @@
 import { object, string, number, boolean, array } from "yup";
 import { subjects } from "../ClassAndSubject";
-import { classes } from "../schoolForm";
+import { classes } from "../SchoolForm";
 
 export const staffLoginSchema = object({
   email: string().email().required(),
@@ -53,25 +53,10 @@ export const schoolSchema = object({
     )
     .required("School Email Suffix is required"),
   schoolClasses: array()
-    .of(
-      object({
-        value: string().oneOf(
-          classes.map((Class) => Class.value),
-          "Invalid Class Selected"
-        ),
-      })
-    )
     .min(1, "At least one class must be selected")
     .required("At least one class must be selected"),
-  classSubjects: array()
-    .of(
-      object({
-        value: string().oneOf(
-          subjects.map((subject) => subject.value),
-          "Invalid Subject Selected"
-        ),
-      })
-    )
-    .min(1, "At least one subject must be selected")
-    .required("At least one subject must be selected"),
+  classSubjects: object().test("min-subjects", "Minimum of 1 subjects required", (value) => {
+    const minSubjectsCount = 1; // Set your desired minimum count
+    return Object.keys(value || {}).length >= minSubjectsCount;
+  }),
 });

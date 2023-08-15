@@ -7,6 +7,8 @@ const MultiSelect = ({
   setSelectedValues,
   name,
   style,
+  touched,
+  errors,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [options, setOptions] = useState(defaultOptions);
@@ -24,14 +26,10 @@ const MultiSelect = ({
       setIsLoading(false);
       setOptions((prev) => [...prev, newOption]);
       setValue((prevValue) => [...prevValue, newOption]);
-      setSelectedValues((prevValue) => [...prevValue, newOption]);
     }, 1000);
   };
 
-  useEffect(() => {
-    setValue(selectedValues);
-  }, [setSelectedValues]);
-
+  //custom styles for creatableSelect
   const customStyles = {
     control: (provided) => ({
       ...provided,
@@ -62,6 +60,8 @@ const MultiSelect = ({
         value={value}
         name={name}
         styles={customStyles}
+        isValid={touched && !errors}
+        isInvalid={!!errors && touched}
       />
     </div>
   );
