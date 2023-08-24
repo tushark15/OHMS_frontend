@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
@@ -27,6 +28,19 @@ export const classes = [
   { value: "XII", label: "XII" },
 ];
 
+export const subjects = [
+  { value: "mathematics", label: "mathematics" },
+  { value: "science", label: "science" },
+  { value: "english", label: "english" },
+  { value: "history", label: "history" },
+  { value: "geography", label: "geography" },
+  { value: "computer_science", label: "computer science" },
+  { value: "physical_education", label: "physical education" },
+  { value: "music", label: "music" },
+  { value: "art", label: "art" },
+  { value: "languages", label: "languages" },
+];
+
 export const initialValues = {
   schoolName: "",
   schoolAddress: "",
@@ -39,7 +53,7 @@ export const initialValues = {
 
 const SchoolForm = () => {
   const [selectedClasses, setSelectedClasses] = useState(new Array());
-  const [areClassesSelected, setAreClassesSelected] = useState(false);
+  const navigate = useNavigate();
 
   const {
     values,
@@ -53,15 +67,17 @@ const SchoolForm = () => {
     initialValues: initialValues,
     validationSchema: schoolSchema,
     onSubmit: (values) => {
-      console.log(values);
+      navigate("dashboard", {
+        state: {
+          schoolClasses: values.schoolClasses,
+          subjectsByClass: values.classSubjects,
+        },
+      });
     },
   });
 
   const handleClasses = (selectedOptions) => {
-    // setSelectedClasses(selectedOptions);
     setValues({ ...values, schoolClasses: selectedOptions });
-    // setAreClassesSelected(true);
-    console.log("schoolForm", selectedOptions);
   };
   try {
     return (
@@ -196,6 +212,7 @@ const SchoolForm = () => {
                       errors={errors.classSubjects}
                       setValues={setValues}
                       values={values}
+                      subjects={subjects}
                     />
                     {touched.classSubjects && errors.classSubjects && (
                       <div className="text-danger">{errors.classSubjects}</div>

@@ -5,6 +5,10 @@ import MainHeader from "./navbar/MainHeader";
 import StaffAuth from "./auth/StaffAuth";
 import StudentAuth from "./auth/StudentAuth";
 import SchoolForm from "./forms/SchoolForm";
+import StudentForm from "./forms/StudentForm";
+import Dashboard from "./dashboard/Dashboard";
+import ClassDashboard from "./classDashboard/ClassDashboard";
+import StaffForm from "./forms/StaffForm";
 
 function App() {
   return (
@@ -15,7 +19,11 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/student/login" element={<StudentAuth />} />
           <Route path="/staff/login" element={<StaffAuth />} />
+          <Route path="/staff" element={<StaffForm/>} />
           <Route path="/staff/school" element={<SchoolForm />} />
+          <Route path="/staff/school/student" element={<StudentForm />} />
+          <Route path="/staff/school/dashboard" element={<Dashboard />} />
+          <Route path="/staff/school/:schoolClass" element={<ClassDashboard />} />
         </Routes>
       </Router>
     </div>

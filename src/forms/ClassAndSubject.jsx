@@ -3,18 +3,6 @@ import { Card, Col, Form, Row } from "react-bootstrap";
 import MultiSelect from "../components/MultiSelect";
 import { initialValues } from "./SchoolForm";
 
-export const subjects = [
-  { value: "mathematics", label: "mathematics" },
-  { value: "science", label: "science" },
-  { value: "english", label: "english" },
-  { value: "history", label: "history" },
-  { value: "geography", label: "geography" },
-  { value: "computer_science", label: "computer science" },
-  { value: "physical_education", label: "physical education" },
-  { value: "music", label: "music" },
-  { value: "art", label: "art" },
-  { value: "languages", label: "languages" },
-];
 
 const ClassAndSubject = ({
   selectedClasses,
@@ -23,6 +11,7 @@ const ClassAndSubject = ({
   errors,
   setValues,
   values,
+  subjects
 }) => {
   const [selectedSubjectsByClass, setSelectedSubjectsByClass] = useState({});
 
