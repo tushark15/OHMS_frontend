@@ -10,24 +10,41 @@ const ClassDashboard = () => {
   const { schoolClass } = useParams();
   const [addStudent, setAddStudent] = useState(false);
   const [students, setStudents] = useState([]);
-  const [student, setStudent] = useState([]);
   const location = useLocation();
   const currentClass = location.state?.currentClass || "";
   const currentClassSubjects = location.state?.currentClassSubjects || [];
 
   const handleAddStudent = () => {
-    console.log(currentClass);
     setAddStudent(true);
   };
 
   const handleStudents = (newStudent) => {
     setStudents((prevStudents) => [...prevStudents, newStudent]);
-    setStudent(newStudent);
   };
 
+  // useEffect(() => {
+  //   console.log("in class dashboard", students);
+  // }, [students]);
+
   useEffect(() => {
-    console.log("in class dashboard", students);
+    const savedStudents = localStorage.getItem("students");
+    console.log("Retrieved students from localStorage:", savedStudents);
+    if (savedStudents) {
+      setStudents(JSON.parse(savedStudents));
+    }
+  }, []);
+
+  // Save students to localStorage whenever the students state changes
+  useEffect(() => {
+    if (students.length > 0) {
+      console.log("Saving students to localStorage:", students);
+      localStorage.setItem("students", JSON.stringify(students));
+    }
   }, [students]);
+
+  const handleDelete =(index) => {
+    setStudents((prevStudents) => prevStudents.filter((_, i) => i!== index));
+  }
 
   return (
     <div
@@ -39,15 +56,15 @@ const ClassDashboard = () => {
         marginLeft: "15px",
       }}
     >
-      <HomeworkUpload/>
+      <HomeworkUpload />
       <div className="d-flex flex-row gap-4">
         {students.length === 0 ? (
           <Alert variant="danger">
-            There are no students in the class. Add students
+            There are no students in the class. Add students!
           </Alert>
         ) : (
           students.map((student, index) => (
-            <StudentCard key={index} student={student} />
+            <StudentCard key={index} student={student} onDelete={()=>handleDelete(index)} />
           ))
         )}
         <AddStudentCard onClick={handleAddStudent} />

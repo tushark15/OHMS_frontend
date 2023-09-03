@@ -3,15 +3,15 @@ import { subjects } from "../SchoolForm";
 import { classes } from "../SchoolForm";
 
 export const staffLoginSchema = object({
-  email: string().email().required(),
-  password: string().min(8).required(),
+  staffEmail: string().email().required(),
+  staffPassword: string().min(8).required(),
   isAdmin: boolean(),
 });
 
 export const staffSignupSchema = object({
-  name: string().min(2).required(),
-  email: string().email().required(),
-  password: string().min(8).required(),
+  staffName: string().min(2).required(),
+  staffEmail: string().email().required(),
+  staffPassword: string().min(8).required(),
   schoolId: number()
     .test(
       "len",
@@ -19,6 +19,7 @@ export const staffSignupSchema = object({
       (val) => typeof val === "number" && val.toString().length === 8
     )
     .required(),
+    isAdmin: boolean().required(),
 });
 
 export const studentLoginSchema = object({
@@ -34,6 +35,13 @@ export const studentLoginSchema = object({
 
 export const schoolSchema = object({
   schoolName: string().required("School Name is required"),
+  schoolId: number()
+  .test(
+    "len",
+    "School ID must be exactly 8 characters",
+    (val) => typeof val === "number" && val.toString().length === 8
+  )
+  .required(),
   schoolAddress: string().required("School Address is required"),
   schoolContact: number()
     .test(
@@ -110,4 +118,5 @@ export const staffSchema = object({
       return Object.keys(value || {}).length >= minSubjectsCount;
     }
   ),
+  isAdmin: boolean().required()
 });

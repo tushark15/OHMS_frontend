@@ -5,29 +5,62 @@ import Form from "react-bootstrap/Form";
 import { useFormik } from "formik";
 import { staffLoginSchema } from "./schemas";
 import { useNavigate } from "react-router-dom";
+import { useHttpClient } from "../hooks/http-hook";
+import ErrorModal from "../components/ErrorModal";
 
 const initialValues = {
-  email: "",
-  password: "",
+  staffEmail: "",
+  staffPassword: "",
   isAdmin: false,
 };
 
 const StaffLoginForm = (props) => {
   const navigate = useNavigate();
-  const { values, handleChange, handleSubmit, handleBlur, touched, errors } =
-    useFormik({
-      initialValues: initialValues,
-      validationSchema: staffLoginSchema,
-      onSubmit: (values) => {
-        navigate("/staff/school");
-      },
-    });
+  const { error, sendRequest, clearError } = useHttpClient();
+  const {
+    values,
+    handleChange,
+    handleSubmit,
+    handleBlur,
+    touched,
+    errors,
+    resetForm,
+  } = useFormik({
+    initialValues: initialValues,
+    validationSchema: staffLoginSchema,
+    onSubmit: async (values) => {
+      console.log(values);
+      try {
+        const responseData = await sendRequest(
+          "http://localhost:3000/api/staff/login",
+          "POST",
+          JSON.stringify(values),
+          {
+            "Content-Type": "application/json",
+          }
+        );
+        console.log(responseData);
+        if (responseData.isAdmin) {
+          navigate("/staff/school");
+        } else {
+          navigate("/staff/school/dashboard");
+        }
+      } catch (err) {}
+    },
+  });
 
   return (
     <div
       className="d-flex flex-column justify-content-center align-items-center"
       style={{ height: "100vh" }}
     >
+      {error && (
+        <ErrorModal
+          error={error}
+          onClose={clearError}
+          onClearError={resetForm}
+        />
+      )}
       <Card
         style={{ width: "45vw", height: "auto" }}
         className="shadow-lg rounded-3 form-card border border-0"
@@ -39,18 +72,18 @@ const StaffLoginForm = (props) => {
               <Form.Label>Email address</Form.Label>
               <Form.Control
                 type="email"
-                name="email"
+                name="staffEmail"
                 placeholder="Enter email"
                 required
-                value={values.email}
+                value={values.staffEmail}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                isValid={touched.email && !errors.email}
-                isInvalid={!!errors.email && touched.email}
+                isValid={touched.staffEmail && !errors.staffEmail}
+                isInvalid={!!errors.staffEmail && touched.staffEmail}
               />
               <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
               <Form.Control.Feedback type="invalid">
-                {errors.email}
+                {errors.staffEmail}
               </Form.Control.Feedback>
             </Form.Group>
 
@@ -58,19 +91,19 @@ const StaffLoginForm = (props) => {
               <Form.Label>Password</Form.Label>
               <Form.Control
                 type="password"
-                name="password"
+                name="staffPassword"
                 placeholder="Password"
                 required
-                value={values.password}
+                value={values.staffPassword}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                isValid={touched.password && !errors.password}
-                isInvalid={!!errors.password && touched.password}
+                isValid={touched.staffPassword && !errors.staffPassword}
+                isInvalid={!!errors.staffPassword && touched.staffPassword}
               />
               <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
               {
                 <Form.Control.Feedback type="invalid">
-                  {errors.password}
+                  {errors.staffPassword}
                 </Form.Control.Feedback>
               }
             </Form.Group>

@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Card, Form, Button, Row, Col } from "react-bootstrap";
 import MultiSelect from "../components/MultiSelect";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import ClassAndSubject from "./ClassAndSubject";
 import { useFormik } from "formik";
 import { staffSchema } from "./schemas";
+import { useHttpClient } from "../hooks/http-hook";
+import StaffList from "../staff/components/StaffList";
+import ErrorModal from "../components/ErrorModal";
 
 const initialValues = {
   staffName: "",
@@ -13,16 +16,20 @@ const initialValues = {
   schoolId: 0,
   staffClasses: [],
   staffSubjects: {},
+  isAdmin: false,
 };
 
 const StaffForm = (props) => {
   const [selectedStaffClasses, setSelectedStaffClasses] = useState([]);
   const [selectedStaffSubjects, setSelectedStaffSubjects] = useState({});
   const [staff, setStaff] = useState([]);
+  const [responseData, setResponseData] = useState(undefined);
 
-  const location = useLocation();
-  const schoolClasses = location.state?.schoolClasses || [];
-  const subjectsByClass = location.state?.subjectsByClass || {};
+  const { error, sendRequest, clearError } = useHttpClient();
+  const [schoolClasses, setSchoolClasses] = useState([]);
+  const [subjectsByClass, setSubjectsByClass] = useState({});
+  const { schoolId } = useParams();
+
   const {
     values,
     handleBlur,
@@ -35,19 +42,53 @@ const StaffForm = (props) => {
   } = useFormik({
     initialValues: initialValues,
     validationSchema: staffSchema,
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
       const newStaff = {
         staffName: values.staffName,
         staffEmail: values.staffEmail,
         staffClasses: values.staffClasses,
         staffSubjects: values.staffSubjects,
+        schoolId: schoolId,
+        isAdmin: values.isAdmin,
       };
+      const modifiedValues = {
+        ...values,
+        schoolId: schoolId,
+      };
+      try {
+        const responseData = await sendRequest(
+          "http://localhost:3000/api/staff/addStaff",
+          "POST",
+          JSON.stringify(modifiedValues),
+          {
+            "Content-Type": "application/json",
+          }
+        );
+      } catch (err) {}
       setStaff((prevStaff) => [...prevStaff, newStaff]);
       setSelectedStaffClasses([]);
       setSelectedStaffSubjects({});
       resetForm();
+      console.log({ values });
     },
   });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const fetchedData = await sendRequest(
+          `http://localhost:3000/api/school/${schoolId}`
+        );
+        setResponseData(fetchedData);
+        setSchoolClasses(fetchedData.schoolClasses);
+        setSubjectsByClass(fetchedData.classSubjects);
+      } catch (err) {
+        // Handle errors if necessary
+      }
+    };
+    fetchData();
+  }, [schoolId]);
+
   const handleStaffClasses = (selectedOptions) => {
     setValues({ ...values, staffClasses: selectedOptions });
   };
@@ -59,27 +100,30 @@ const StaffForm = (props) => {
     }));
   };
 
-  // const handleDeleteStaff =() =>{
-  //   setStaff((prevStaff) => prevStaff.filter((staff) => staff.id!== staff.id));
-  // }
-
-  const handleDeleteStaff = (index) => {
-    setStaff((prevStaff) => prevStaff.filter((_, i) => i !== index));
+  const handleDeleteStaff = (deleteStaffId) => {
+    console.log(staff);
+    setStaff((prevStaff) =>
+      prevStaff.filter((staff) => staff.id !== deleteStaffId)
+    );
   };
 
   useEffect(() => {
     setValues({ ...values, staffSubjects: selectedStaffSubjects });
   }, [selectedStaffSubjects]);
 
-  useEffect(() => {
-    console.log(staff);
-  }, [staff]);
   return (
     <div className="d-flex flex-column align-items-center ">
       <Card
         style={{ marginTop: "12vh", width: "90%" }}
         className="shadow-lg rounded-3 form-card border border-0 mb-5"
       >
+        {error && (
+          <ErrorModal
+            error={error}
+            onClose={clearError}
+            onClearError={resetForm}
+          />
+        )}
         <Card.Body>
           <Card.Title>Teacher Form</Card.Title>
           <Form noValidate onSubmit={handleSubmit}>
@@ -144,7 +188,7 @@ const StaffForm = (props) => {
                 <Form.Label>Staff Classes</Form.Label>
                 <MultiSelect
                   defaultOptions={schoolClasses}
-                  selectedValues={selectedStaffClasses}
+                  selectedValues={values.staffClasses}
                   setSelectedValues={handleStaffClasses}
                   name="staffClasses"
                 />
@@ -154,6 +198,15 @@ const StaffForm = (props) => {
                 </Form.Control.Feedback>
               </Form.Group>
             </Row>
+            <Form.Group className="mb-3" controlId="formBasicCheckbox">
+              <Form.Check
+                type="checkbox"
+                name="isAdmin"
+                label="Is Admin?"
+                value={values.isAdmin}
+                onChange={handleChange}
+              />
+            </Form.Group>
             <Row className="mb-4 d-flex flex-column justify-content-center align-items-center ">
               {values.staffClasses &&
                 values.staffClasses.map((staffClass, index) => {
@@ -178,27 +231,7 @@ const StaffForm = (props) => {
           </Form>
         </Card.Body>
       </Card>
-      {staff.map((staff, index) => {
-        return (
-          <Card
-            key={index}
-            style={{ width: "90%" }}
-            className="shadow-lg rounded-3 form-card border border-0 mb-5"
-          >
-            <Card.Body className="d-flex flex-row">
-              <Card.Title>{staff.staffName}</Card.Title>
-              <Card.Text>Email: {staff.staffEmail}</Card.Text>
-              <div className="flex-grow-1"></div>
-              <Button
-                className="align-self-end"
-                onClick={() => handleDeleteStaff(index)}
-              >
-                Delete
-              </Button>
-            </Card.Body>
-          </Card>
-        );
-      })}
+      <StaffList staff={staff} onDelete={handleDeleteStaff} schoolId={schoolId} />
     </div>
   );
 };

@@ -19,10 +19,10 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/student/login" element={<StudentAuth />} />
           <Route path="/staff/login" element={<StaffAuth />} />
-          <Route path="/staff" element={<StaffForm/>} />
           <Route path="/staff/school" element={<SchoolForm />} />
           <Route path="/staff/school/student" element={<StudentForm />} />
-          <Route path="/staff/school/dashboard" element={<Dashboard />} />
+          <Route path="/staff/school/dashboard/:schoolId" element={<Dashboard />} />
+          <Route path="/staff/school/dashboard/:schoolId/addStaff" element={<StaffForm/>} />
           <Route path="/staff/school/:schoolClass" element={<ClassDashboard />} />
         </Routes>
       </Router>

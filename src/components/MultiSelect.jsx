@@ -11,8 +11,12 @@ const MultiSelect = ({
   errors,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [options, setOptions] = useState(defaultOptions);
-  const [value, setValue] = useState(selectedValues);
+  const [options, setOptions] = useState([]);
+
+  useEffect(() => {
+    // Update options when defaultOptions change
+    setOptions(defaultOptions);
+  }, [defaultOptions]);
 
   const createOption = (label) => ({
     label,
@@ -52,12 +56,12 @@ const MultiSelect = ({
         isDisabled={isLoading}
         isLoading={isLoading}
         onChange={(newValue) => {
-          setValue(newValue);
+          //setValue(newValue);
           setSelectedValues(newValue);
         }}
         onCreateOption={handleCreate}
         options={options}
-        value={value}
+        value={selectedValues}
         name={name}
         styles={customStyles}
         isValid={touched && !errors}

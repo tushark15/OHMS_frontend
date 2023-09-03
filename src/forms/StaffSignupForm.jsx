@@ -6,33 +6,57 @@ import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import { useFormik } from "formik";
 import { staffSignupSchema } from "./schemas";
-import {useNavigate} from "react-router-dom"
+import { useNavigate } from "react-router-dom";
+import { useHttpClient } from "../hooks/http-hook";
+import ErrorModal from "../components/ErrorModal";
 const initialValues = {
-  name: "",
-  email: "",
-  password: "",
+  staffName: "",
+  staffEmail: "",
+  staffPassword: "",
   schoolId: 0,
+  isAdmin: false,
 };
 
 const StaffSignupForm = (props) => {
   const navigate = useNavigate();
-  const { values, handleChange, handleSubmit, handleBlur, touched, errors } =
-    useFormik({
-      initialValues: initialValues,
-      validationSchema: staffSignupSchema,
-      onSubmit: (values) => {
-        navigate("/staff/school")
-      },
-    });
+  const { error, sendRequest, clearError } = useHttpClient();
+  const {
+    values,
+    handleChange,
+    handleSubmit,
+    handleBlur,
+    touched,
+    errors,
+    resetForm,
+  } = useFormik({
+    initialValues: initialValues,
+    validationSchema: staffSignupSchema,
+    onSubmit: async (values) => {
+      console.log(values);
+      const modifiedValues = {
+        ...values,
+        isAdmin: true,
+      };
+      try {
+        const responseData = await sendRequest(
+          "http://localhost:3000/api/staff/signup",
+          "POST",
+          JSON.stringify(modifiedValues),
+          {
+            "Content-Type": "application/json",
+          }
+        );
+        navigate("/staff/school");
+      } catch (err) {}
+    },
+  });
   return (
     <div
       className="d-flex flex-column justify-content-center align-items-center"
       style={{ height: "100vh" }}
     >
-      <Card
-        style={{ width: "45vw", height: "auto" }}
-        className=" "
-      >
+      {error && <ErrorModal error={error} onClose={clearError} onClearError={resetForm} />}
+      <Card style={{ width: "45vw", height: "auto" }} className=" ">
         <Card.Body className="mt-2">
           <Card.Title className="mb-4">Signup</Card.Title>
           <Form noValidate onSubmit={handleSubmit}>
@@ -43,17 +67,17 @@ const StaffSignupForm = (props) => {
                   <Form.Control
                     type="text"
                     placeholder="Enter name"
-                    name="name"
+                    name="staffName"
                     required
-                    value={values.name}
+                    value={values.staffName}
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    isValid={touched.name && !errors.name}
-                    isInvalid={!!errors.name && touched.name}
+                    isValid={touched.staffName && !errors.staffName}
+                    isInvalid={!!errors.staffName && touched.staffName}
                   />
                   <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                   <Form.Control.Feedback type="invalid">
-                    {errors.name}
+                    {errors.staffName}
                   </Form.Control.Feedback>
                 </Form.Group>
               </Col>
@@ -62,18 +86,18 @@ const StaffSignupForm = (props) => {
                   <Form.Label>Email address</Form.Label>
                   <Form.Control
                     type="email"
-                    name="email"
+                    name="staffEmail"
                     placeholder="Enter email"
                     required
-                    value={values.email}
+                    value={values.staffEmail}
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    isValid={touched.email && !errors.email}
-                    isInvalid={!!errors.email && touched.email}
+                    isValid={touched.staffEmail && !errors.staffEmail}
+                    isInvalid={!!errors.staffEmail && touched.staffEmail}
                   />
                   <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                   <Form.Control.Feedback type="invalid">
-                    {errors.email}
+                    {errors.staffEmail}
                   </Form.Control.Feedback>
                 </Form.Group>
               </Col>
@@ -84,19 +108,19 @@ const StaffSignupForm = (props) => {
                   <Form.Label>Password</Form.Label>
                   <Form.Control
                     type="password"
-                    name="password"
+                    name="staffPassword"
                     placeholder="Password"
                     required
-                    value={values.password}
+                    value={values.staffPassword}
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    isValid={touched.password && !errors.password}
-                    isInvalid={!!errors.password && touched.password}
+                    isValid={touched.staffPassword && !errors.staffPassword}
+                    isInvalid={!!errors.staffPassword && touched.staffPassword}
                   />
                   <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                   {
                     <Form.Control.Feedback type="invalid">
-                      {errors.password}
+                      {errors.staffPassword}
                     </Form.Control.Feedback>
                   }
                 </Form.Group>

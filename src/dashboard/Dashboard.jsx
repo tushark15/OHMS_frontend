@@ -1,17 +1,41 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Card } from "react-bootstrap";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import "./Dashboard.css";
 import AddStaffCard from "../staff/components/AddStaffCard";
+import { useHttpClient } from "../hooks/http-hook";
+import ErrorModal from "../components/ErrorModal";
 
 const MAX_SUBJECTS = 3;
 
 const Dashboard = () => {
   const location = useLocation();
-  const schoolClasses = location.state?.schoolClasses || [];
-  const subjectsByClass = location.state?.subjectsByClass || [];
-  const navigate = useNavigate();
+  const [responseData, setResponseData] = useState(undefined);
+  const [schoolClasses, setSchoolClasses] = useState([]);
+  const [subjectsByClass, setSubjectsByClass] = useState({});
 
+  const { schoolId } = useParams();
+
+  const navigate = useNavigate();
+  const { error, sendRequest, clearError } = useHttpClient();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const fetchedData = await sendRequest(
+          `http://localhost:3000/api/school/${schoolId}`
+        );
+        setResponseData(fetchedData);
+        setSchoolClasses(fetchedData.schoolClasses);
+        setSubjectsByClass(fetchedData.classSubjects);
+      } catch (err) {
+        // Handle errors if necessary
+      }
+    };
+    fetchData();
+  }, [schoolId]);
+
+  console.log(responseData);
   const handleClick = (schoolClass) => {
     navigate(`/staff/school/${schoolClass}`, {
       state: {
@@ -24,8 +48,20 @@ const Dashboard = () => {
     if (schoolClasses.length > 0) {
       return (
         <div>
+          {error && (
+            <ErrorModal
+              error={error}
+              onClose={clearError}
+              onClearError={resetForm}
+            />
+          )}
+
           <div className="d-flex flex-column align-items-center">
-            <AddStaffCard schoolClasses={schoolClasses} subjectsByClass={subjectsByClass} />
+            <AddStaffCard
+              schoolClasses={schoolClasses}
+              subjectsByClass={subjectsByClass}
+              schoolId={schoolId}
+            />
           </div>
           <div
             className="d-flex flex-row flex-wrap align-items-start gap-5    "

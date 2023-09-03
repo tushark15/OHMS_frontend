@@ -9,6 +9,8 @@ import MultiSelect from "../components/MultiSelect";
 import ClassAndSubject from "./ClassAndSubject";
 import { useFormik } from "formik";
 import { schoolSchema } from "./schemas";
+import { useHttpClient } from "../hooks/http-hook";
+import ErrorModal from "../components/ErrorModal";
 export const classes = [
   { value: "Nursery", label: "Nursery" },
   { value: "KG", label: "KG" },
@@ -49,12 +51,12 @@ export const initialValues = {
   schoolEmailSuffix: "",
   schoolClasses: [],
   classSubjects: {},
+  schoolId: 0,
 };
 
 const SchoolForm = () => {
-  const [selectedClasses, setSelectedClasses] = useState(new Array());
+  const { error, sendRequest, clearError } = useHttpClient();
   const navigate = useNavigate();
-
   const {
     values,
     handleChange,
@@ -63,16 +65,23 @@ const SchoolForm = () => {
     touched,
     errors,
     setValues,
+    resetForm,
   } = useFormik({
     initialValues: initialValues,
     validationSchema: schoolSchema,
-    onSubmit: (values) => {
-      navigate("dashboard", {
-        state: {
-          schoolClasses: values.schoolClasses,
-          subjectsByClass: values.classSubjects,
-        },
-      });
+    onSubmit: async (values) => {
+      try {
+        const responseData = await sendRequest(
+          "http://localhost:3000/api/school/",
+          "POST",
+          JSON.stringify(values),
+          {
+            "Content-Type": "application/json",
+          }
+        );
+        navigate(`dashboard/${responseData.schoolId}`);
+      } catch (err) {}
+      console.log(values);
     },
   });
 
@@ -85,6 +94,14 @@ const SchoolForm = () => {
         className="d-flex flex-column align-items-center"
         style={{ height: "100vh", width: "100vw", marginTop: "12vh" }}
       >
+        {error && (
+          <ErrorModal
+            error={error}
+            onClose={clearError}
+            onClearError={resetForm}
+          />
+        )}
+
         <Card
           style={{ width: "90%" }}
           className="d-flex flex-column justify-content-center align-items-center shadow-lg rounded-3 form-card border border-0 mb-5"
@@ -92,23 +109,42 @@ const SchoolForm = () => {
           <Card.Body style={{ width: "90%" }} className="mt-2">
             <Card.Title className="mb-4">Add school details</Card.Title>
             <Form noValidate onSubmit={handleSubmit}>
-              <Form.Group as={Col} controlId="schoolName" className="mb-4">
-                <Form.Label>School Name</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Enter School Name"
-                  name="schoolName"
-                  value={values.schoolName}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  isValid={touched.schoolName && !errors.schoolName}
-                  isInvalid={!!errors.schoolName && touched.schoolName}
-                />
-                <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-                <Form.Control.Feedback type="invalid">
-                  {errors.schoolName}
-                </Form.Control.Feedback>
-              </Form.Group>
+              <Row>
+                <Form.Group as={Col} controlId="schoolName" className="mb-4">
+                  <Form.Label>School Name</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Enter School Name"
+                    name="schoolName"
+                    value={values.schoolName}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    isValid={touched.schoolName && !errors.schoolName}
+                    isInvalid={!!errors.schoolName && touched.schoolName}
+                  />
+                  <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+                  <Form.Control.Feedback type="invalid">
+                    {errors.schoolName}
+                  </Form.Control.Feedback>
+                </Form.Group>
+                <Form.Group as={Col} controlId="schoolName" className="mb-4">
+                  <Form.Label>School ID</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Enter School ID"
+                    name="schoolId"
+                    value={values.schoolId}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    isValid={touched.schoolId && !errors.schoolId}
+                    isInvalid={!!errors.schoolId && touched.schoolId}
+                  />
+                  <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+                  <Form.Control.Feedback type="invalid">
+                    {errors.schoolId}
+                  </Form.Control.Feedback>
+                </Form.Group>
+              </Row>
               <Form.Group className="mb-4" controlId="schoolAddress">
                 <Form.Label>School Address</Form.Label>
                 <Form.Control
@@ -188,7 +224,7 @@ const SchoolForm = () => {
                   <Form.Label>Classes</Form.Label>
                   <MultiSelect
                     defaultOptions={classes}
-                    selectedValues={selectedClasses}
+                    selectedValues={values.schoolClasses}
                     setSelectedValues={handleClasses}
                     name="schoolClasses"
                     touched={touched.schoolClasses}
