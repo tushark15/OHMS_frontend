@@ -2,6 +2,8 @@ import { useFormik } from "formik";
 import React from "react";
 import { Modal, Form, Row, Col, Button } from "react-bootstrap";
 import { studentSchema } from "./schemas";
+import { useHttpClient } from "../hooks/http-hook";
+import { useAuth } from "../hooks/auth-hook";
 
 const initialValues = {
   studentName: "",
@@ -10,10 +12,13 @@ const initialValues = {
   studentContact: 0,
   studentAddress: "",
   studentDOB: "",
-  class: "",
+  studentClass: "",
+  schoolId: 0,
 };
 
 const studentForm = (props) => {
+  const { error, sendRequest, clearError } = useHttpClient();
+  const { isAdmin } = useAuth();
   const {
     values,
     handleChange,
@@ -25,17 +30,31 @@ const studentForm = (props) => {
   } = useFormik({
     initialValues: initialValues,
     validationSchema: studentSchema,
-    onSubmit: (values) => {
-      console.log(values);
+    onSubmit: async (values) => {
+      console.log(values.studentDOB);
+      try {
+        const responseData = await sendRequest(
+          "http://localhost:3000/api/student",
+          "POST",
+          JSON.stringify(values),
+          {
+            "Content-Type": "application/json",
+          }
+        );
+      } catch (err) {}
       props.onStudentAdd(values);
       props.onHide();
       resetForm();
     },
   });
-  values.class = props.schoolclass;
+
+  values.studentClass = props.schoolclass;
+  values.schoolId = props.schoolId;
+
+
   const maxAllowedDOB = () => {
     const currentDate = new Date();
-    currentDate.setFullYear(currentDate.getFullYear() - 3); 
+    currentDate.setFullYear(currentDate.getFullYear() - 3);
     return currentDate;
   };
   return (
@@ -116,7 +135,7 @@ const studentForm = (props) => {
                 onBlur={handleBlur}
                 isValid={touched.studentDOB && !errors.studentDOB}
                 isInvalid={touched.studentDOB && !!errors.studentDOB}
-                max={maxAllowedDOB().toISOString().split("T")[0]} 
+                max={maxAllowedDOB().toISOString().split("T")[0]}
               />
               <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
               <Form.Control.Feedback type="invalid">

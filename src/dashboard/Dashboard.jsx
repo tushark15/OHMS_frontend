@@ -5,11 +5,14 @@ import "./Dashboard.css";
 import AddStaffCard from "../staff/components/AddStaffCard";
 import { useHttpClient } from "../hooks/http-hook";
 import ErrorModal from "../components/ErrorModal";
+import ClassDashboard from "../classDashboard/ClassDashboard";
+import { useAuth } from "../hooks/auth-hook";
 
 const MAX_SUBJECTS = 3;
 
 const Dashboard = () => {
   const location = useLocation();
+  const {isAdmin, setAdminStatus} = useAuth();
   const [responseData, setResponseData] = useState(undefined);
   const [schoolClasses, setSchoolClasses] = useState([]);
   const [subjectsByClass, setSubjectsByClass] = useState({});
@@ -35,12 +38,19 @@ const Dashboard = () => {
     fetchData();
   }, [schoolId]);
 
-  console.log(responseData);
-  const handleClick = (schoolClass) => {
-    navigate(`/staff/school/${schoolClass}`, {
+  useEffect(() => {
+    const isAdminStatus = localStorage.getItem('isAdmin');
+    if (isAdminStatus) {
+      // Use the isAdmin status from local storage
+      setAdminStatus(JSON.parse(isAdminStatus));
+    }
+  }, []);
+
+  console.log(isAdmin);
+  const handleClick = (schoolClassLabel) => {
+    navigate(`/staff/school/dashboard/${schoolId}/${schoolClassLabel}`, {
       state: {
-        currentClass: schoolClass,
-        currentClassSubjects: subjectsByClass[schoolClass],
+        currentClassSubjects: subjectsByClass[schoolClassLabel],
       },
     });
   };
@@ -57,11 +67,13 @@ const Dashboard = () => {
           )}
 
           <div className="d-flex flex-column align-items-center">
-            <AddStaffCard
-              schoolClasses={schoolClasses}
-              subjectsByClass={subjectsByClass}
-              schoolId={schoolId}
-            />
+            {isAdmin && (
+              <AddStaffCard
+                schoolClasses={schoolClasses}
+                subjectsByClass={subjectsByClass}
+                schoolId={schoolId}
+              />
+            )}
           </div>
           <div
             className="d-flex flex-row flex-wrap align-items-start gap-5    "

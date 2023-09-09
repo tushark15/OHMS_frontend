@@ -9,6 +9,8 @@ import { staffSignupSchema } from "./schemas";
 import { useNavigate } from "react-router-dom";
 import { useHttpClient } from "../hooks/http-hook";
 import ErrorModal from "../components/ErrorModal";
+import { useAuth } from "../hooks/auth-hook";
+
 const initialValues = {
   staffName: "",
   staffEmail: "",
@@ -19,6 +21,8 @@ const initialValues = {
 
 const StaffSignupForm = (props) => {
   const navigate = useNavigate();
+  const { setAdminStatus } = useAuth();
+
   const { error, sendRequest, clearError } = useHttpClient();
   const {
     values,
@@ -46,6 +50,7 @@ const StaffSignupForm = (props) => {
             "Content-Type": "application/json",
           }
         );
+        setAdminStatus(responseData.isAdmin);
         navigate("/staff/school");
       } catch (err) {}
     },

@@ -99,7 +99,8 @@ export const studentSchema = object({
       new Date(Date.now() - 3 * 365 * 24 * 60 * 60 * 1000),
       "Student must be older than 3 years"
     ),
-  class: string().required(),
+  studentClass: string().required(),
+  schoolId: number().required()
 });
 
 export const staffSchema = object({
