@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Card, Form, Button, Row, Col } from "react-bootstrap";
-import MultiSelect from "../components/MultiSelect";
+import MultiSelect from "../../components/MultiSelect";
 import { useLocation, useParams } from "react-router-dom";
-import ClassAndSubject from "./ClassAndSubject";
+import ClassAndSubject from "../formComponents/ClassAndSubject";
 import { useFormik } from "formik";
-import { staffSchema } from "./schemas";
-import { useHttpClient } from "../hooks/http-hook";
-import StaffList from "../staff/components/StaffList";
-import ErrorModal from "../components/ErrorModal";
+import { staffSchema } from "../schemas";
+import { useHttpClient } from "../../hooks/http-hook";
+import StaffList from "../../staff/components/StaffList";
+import ErrorModal from "../../components/ErrorModal";
 
 const initialValues = {
   staffName: "",
@@ -231,7 +231,11 @@ const StaffForm = (props) => {
           </Form>
         </Card.Body>
       </Card>
-      <StaffList staff={staff} onDelete={handleDeleteStaff} schoolId={schoolId} />
+      <StaffList
+        staff={staff}
+        onDelete={handleDeleteStaff}
+        schoolId={schoolId}
+      />
     </div>
   );
 };

@@ -1,11 +1,8 @@
 import { object, string, number, boolean, array, date, mixed } from "yup";
-import { subjects } from "../SchoolForm";
-import { classes } from "../SchoolForm";
 
 export const staffLoginSchema = object({
   staffEmail: string().email().required(),
   staffPassword: string().min(8).required(),
-  isAdmin: boolean(),
 });
 
 export const staffSignupSchema = object({

@@ -5,12 +5,12 @@ import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Card from "react-bootstrap/Card";
-import MultiSelect from "../components/MultiSelect";
-import ClassAndSubject from "./ClassAndSubject";
+import MultiSelect from "../../components/MultiSelect";
+import ClassAndSubject from "../formComponents/ClassAndSubject";
 import { useFormik } from "formik";
-import { schoolSchema } from "./schemas";
-import { useHttpClient } from "../hooks/http-hook";
-import ErrorModal from "../components/ErrorModal";
+import { schoolSchema } from "../schemas";
+import { useHttpClient } from "../../hooks/http-hook";
+import ErrorModal from "../../components/ErrorModal";
 export const classes = [
   { value: "Nursery", label: "Nursery" },
   { value: "KG", label: "KG" },

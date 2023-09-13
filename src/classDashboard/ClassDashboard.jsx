@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Alert, Card, Form } from "react-bootstrap";
 import { useParams, useLocation } from "react-router-dom";
-import StudentForm from "../forms/StudentForm";
+import StudentForm from "../forms/student/StudentForm";
 import AddStudentCard from "../student/components/AddStudentCard";
 import StudentCard from "../student/components/StudentCard";
 import HomeworkUpload from "../homework/HomeworkUpload";
 import { useHttpClient } from "../hooks/http-hook";
 import ErrorModal from "../components/ErrorModal";
-import { classes } from "../forms/SchoolForm";
+import { classes } from "../forms/school/SchoolForm";
 import { useAuth } from "../hooks/auth-hook";
 
 const ClassDashboard = () => {

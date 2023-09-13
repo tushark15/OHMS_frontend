@@ -1,7 +1,7 @@
 import React from "react";
 import { useState } from "react";
-import StaffLoginForm from "../forms/StaffLoginForm";
-import StaffSignupForm from "../forms/StaffSignupForm";
+import StaffLoginForm from "../forms/staff/StaffLoginForm";
+import StaffSignupForm from "../forms/staff/StaffSignupForm";
 
 const StaffAuth = () => {
   const [isLogin, setIsLogin] = useState(true);

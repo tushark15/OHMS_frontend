@@ -5,11 +5,11 @@ import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import { useFormik } from "formik";
-import { staffSignupSchema } from "./schemas";
+import { staffSignupSchema } from "../schemas";
 import { useNavigate } from "react-router-dom";
-import { useHttpClient } from "../hooks/http-hook";
-import ErrorModal from "../components/ErrorModal";
-import { useAuth } from "../hooks/auth-hook";
+import { useHttpClient } from "../../hooks/http-hook";
+import ErrorModal from "../../components/ErrorModal";
+import { useAuth } from "../../hooks/auth-hook";
 
 const initialValues = {
   staffName: "",

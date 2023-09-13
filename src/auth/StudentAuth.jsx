@@ -1,5 +1,5 @@
 import React from "react";
-import StudentLoginForm from "../forms/StudentLoginForm";
+import StudentLoginForm from "../forms/student/StudentLoginForm"
 
 const StudentAuth = () => {
   return (

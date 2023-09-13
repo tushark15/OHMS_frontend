@@ -3,16 +3,15 @@ import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { useFormik } from "formik";
-import { staffLoginSchema } from "./schemas";
+import { staffLoginSchema } from "../schemas";
 import { useNavigate } from "react-router-dom";
-import { useHttpClient } from "../hooks/http-hook";
-import ErrorModal from "../components/ErrorModal";
-import { useAuth } from "../hooks/auth-hook";
+import { useHttpClient } from "../../hooks/http-hook";
+import ErrorModal from "../../components/ErrorModal";
+import { useAuth } from "../../hooks/auth-hook";
 
 const initialValues = {
   staffEmail: "",
   staffPassword: "",
-  isAdmin: false,
 };
 
 const StaffLoginForm = (props) => {
@@ -31,7 +30,6 @@ const StaffLoginForm = (props) => {
     initialValues: initialValues,
     validationSchema: staffLoginSchema,
     onSubmit: async (values) => {
-      console.log(values);
       try {
         const responseData = await sendRequest(
           "http://localhost:3000/api/staff/login",
@@ -42,7 +40,6 @@ const StaffLoginForm = (props) => {
           }
         );
         auth.login(responseData)
-        console.log(responseData.isAdmin);
         navigate(`/staff/school/dashboard/${responseData.schoolId}`);
       } catch (err) {}
     },
@@ -107,16 +104,6 @@ const StaffLoginForm = (props) => {
                   {errors.staffPassword}
                 </Form.Control.Feedback>
               }
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="formBasicCheckbox">
-              <Form.Check
-                type="checkbox"
-                name="isAdmin"
-                label="Is Admin?"
-                value={values.isAdmin}
-                onChange={handleChange}
-              />
             </Form.Group>
             <Button variant="primary" type="submit">
               Submit

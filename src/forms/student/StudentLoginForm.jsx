@@ -3,7 +3,7 @@ import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { useFormik } from "formik";
-import { studentLoginSchema } from "./schemas";
+import { studentLoginSchema } from "../schemas";
 
 const initialValues = {
   studentId: 0,

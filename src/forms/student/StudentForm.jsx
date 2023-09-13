@@ -1,9 +1,9 @@
 import { useFormik } from "formik";
 import React from "react";
 import { Modal, Form, Row, Col, Button } from "react-bootstrap";
-import { studentSchema } from "./schemas";
-import { useHttpClient } from "../hooks/http-hook";
-import { useAuth } from "../hooks/auth-hook";
+import { studentSchema } from "../schemas";
+import { useHttpClient } from "../../hooks/http-hook";
+import { useAuth } from "../../hooks/auth-hook";
 
 const initialValues = {
   studentName: "",
@@ -50,7 +50,6 @@ const studentForm = (props) => {
 
   values.studentClass = props.schoolclass;
   values.schoolId = props.schoolId;
-
 
   const maxAllowedDOB = () => {
     const currentDate = new Date();
@@ -180,7 +179,7 @@ const studentForm = (props) => {
               </Form.Control.Feedback>
             </Form.Group>
           </Row>
-          <Button type="submit" >Add Student</Button>
+          <Button type="submit">Add Student</Button>
         </Form>
       </Modal.Body>
     </Modal>
