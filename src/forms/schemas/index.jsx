@@ -1,4 +1,4 @@
-import { object, string, number, boolean, array, date } from "yup";
+import { object, string, number, boolean, array, date, mixed } from "yup";
 import { subjects } from "../SchoolForm";
 import { classes } from "../SchoolForm";
 
@@ -19,7 +19,7 @@ export const staffSignupSchema = object({
       (val) => typeof val === "number" && val.toString().length === 8
     )
     .required(),
-    isAdmin: boolean().required(),
+  isAdmin: boolean().required(),
 });
 
 export const studentLoginSchema = object({
@@ -36,12 +36,12 @@ export const studentLoginSchema = object({
 export const schoolSchema = object({
   schoolName: string().required("School Name is required"),
   schoolId: number()
-  .test(
-    "len",
-    "School ID must be exactly 8 characters",
-    (val) => typeof val === "number" && val.toString().length === 8
-  )
-  .required(),
+    .test(
+      "len",
+      "School ID must be exactly 8 characters",
+      (val) => typeof val === "number" && val.toString().length === 8
+    )
+    .required(),
   schoolAddress: string().required("School Address is required"),
   schoolContact: number()
     .test(
@@ -100,7 +100,7 @@ export const studentSchema = object({
       "Student must be older than 3 years"
     ),
   studentClass: string().required(),
-  schoolId: number().required()
+  schoolId: number().required(),
 });
 
 export const staffSchema = object({
@@ -119,5 +119,36 @@ export const staffSchema = object({
       return Object.keys(value || {}).length >= minSubjectsCount;
     }
   ),
-  isAdmin: boolean().required()
+  isAdmin: boolean().required(),
+});
+
+const FILE_SIZE = 160 * 1024;
+const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/gif", "image/png"];
+
+export const homeworkSchema = object({
+  files: mixed()
+    .test("fileSize", "File Size is too large", (value) => {
+      if (value && value?.length > 0) {
+        for (let i = 0; i < value.length; i++) {
+          if (value[i].size > 5242880) {
+            return false;
+          }
+        }
+      }
+      return true;
+    })
+    .test("fileType", "Unsupported File Format", (value) => {
+      if (value && value.length > 0) {
+        for (let i = 0; i < value.length; i++) {
+          if (
+            value[i].type != "image/png" &&
+            value[i].type != "image/jpg" &&
+            value[i].type != "image/jpeg"
+          ) {
+            return false;
+          }
+        }
+      }
+      return true;
+    }),
 });

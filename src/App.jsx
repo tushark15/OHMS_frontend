@@ -8,12 +8,18 @@ import StudentForm from "./forms/StudentForm";
 import Dashboard from "./dashboard/Dashboard";
 import ClassDashboard from "./classDashboard/ClassDashboard";
 import StaffForm from "./forms/StaffForm";
-import { AuthProvider } from "./context/auth-context";
 import React from "react";
+import { useAuth } from "./hooks/auth-hook";
+import { AuthContext } from "./context/auth-context";
 
 function App() {
+  const {login, logout, user} = useAuth()
   return (
-    <AuthProvider>
+    <AuthContext.Provider value={{
+      user,
+      login,
+      logout
+    }}>
       <div>
         <MainHeader />
         <Router>
@@ -37,7 +43,7 @@ function App() {
           </Routes>
         </Router>
       </div>
-    </AuthProvider>
+    </AuthContext.Provider>
   );
 }
 

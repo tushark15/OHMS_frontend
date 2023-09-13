@@ -18,7 +18,7 @@ const initialValues = {
 
 const studentForm = (props) => {
   const { error, sendRequest, clearError } = useHttpClient();
-  const { isAdmin } = useAuth();
+  const auth = useAuth();
   const {
     values,
     handleChange,
@@ -180,7 +180,7 @@ const studentForm = (props) => {
               </Form.Control.Feedback>
             </Form.Group>
           </Row>
-          <Button type="submit">Add Student</Button>
+          <Button type="submit" >Add Student</Button>
         </Form>
       </Modal.Body>
     </Modal>

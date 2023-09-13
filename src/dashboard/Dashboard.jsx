@@ -1,26 +1,25 @@
 import React, { useEffect, useState } from "react";
-import { Card } from "react-bootstrap";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import "./Dashboard.css";
 import AddStaffCard from "../staff/components/AddStaffCard";
 import { useHttpClient } from "../hooks/http-hook";
 import ErrorModal from "../components/ErrorModal";
-import ClassDashboard from "../classDashboard/ClassDashboard";
+import ClassDisplayCard from "./ClassDisplayCard";
 import { useAuth } from "../hooks/auth-hook";
 
 const MAX_SUBJECTS = 3;
 
 const Dashboard = () => {
-  const location = useLocation();
-  const {isAdmin, setAdminStatus} = useAuth();
+  const [currentStaff, setCurrentStaff] = useState({});
   const [responseData, setResponseData] = useState(undefined);
+  const [classesToDisplay, setClassesToDisplay] = useState([]);
   const [schoolClasses, setSchoolClasses] = useState([]);
   const [subjectsByClass, setSubjectsByClass] = useState({});
 
   const { schoolId } = useParams();
 
-  const navigate = useNavigate();
   const { error, sendRequest, clearError } = useHttpClient();
+  const auth = useAuth();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -39,21 +38,33 @@ const Dashboard = () => {
   }, [schoolId]);
 
   useEffect(() => {
-    const isAdminStatus = localStorage.getItem('isAdmin');
-    if (isAdminStatus) {
-      // Use the isAdmin status from local storage
-      setAdminStatus(JSON.parse(isAdminStatus));
+    const staff = localStorage.getItem("currentUser");
+    if (staff) {
+      setCurrentStaff(JSON.parse(staff));
     }
   }, []);
 
-  console.log(isAdmin);
-  const handleClick = (schoolClassLabel) => {
-    navigate(`/staff/school/dashboard/${schoolId}/${schoolClassLabel}`, {
-      state: {
-        currentClassSubjects: subjectsByClass[schoolClassLabel],
-      },
-    });
-  };
+  const isAdmin = currentStaff.isAdmin;
+
+  // useEffect(() => {
+  //   if (isAdmin) {
+  //     // If admin, show all school classes
+  //     setClassesToDisplay(schoolClasses);
+  //   } else {
+  //     // If not admin, filter classes for the current staff
+  //     const staffClasses = schoolClasses.filter((schoolClass) => {
+  //       // console.log(...currentStaff.staffClasses.map((staffClass) =>{
+  //       //   return staffClass.value === schoolClass.value
+  //       // }))
+  //       return currentStaff.staffClasses.map((staffClass) =>{
+  //         return staffClass.value === schoolClass.value
+  //       });
+  //     });
+  //     console.log(staffClasses)
+  //     setClassesToDisplay(staffClasses);
+  //   }
+  // }, [schoolClasses, currentStaff, isAdmin])
+
   {
     if (schoolClasses.length > 0) {
       return (
@@ -67,7 +78,7 @@ const Dashboard = () => {
           )}
 
           <div className="d-flex flex-column align-items-center">
-            {isAdmin && (
+            {auth.user.isAdmin && (
               <AddStaffCard
                 schoolClasses={schoolClasses}
                 subjectsByClass={subjectsByClass}
@@ -92,27 +103,13 @@ const Dashboard = () => {
               const remainingSubjects = classSubjects.length - MAX_SUBJECTS;
 
               return (
-                <Card
+                <ClassDisplayCard
                   key={schoolClass.value}
-                  style={{
-                    minWidth: "15em",
-                    maxWidth: "15em",
-                    maxHeight: "15em",
-                  }}
-                  className="shadow-lg rounded-3 border border-0 classCard"
-                  onClick={() => handleClick(schoolClass.label)}
-                >
-                  <Card.Body>
-                    <Card.Title>{schoolClass.label}</Card.Title>
-                    <Card.Text>{`Total Students : 0`}</Card.Text>
-                    <Card.Text>{`Class Teachers : John`}</Card.Text>
-                    <Card.Text>
-                      {" "}
-                      Subjects : {visibleSubjects.join(", ")}
-                      {remainingSubjects > 0 && ` ... (+${remainingSubjects})`}
-                    </Card.Text>
-                  </Card.Body>
-                </Card>
+                  schoolClass={schoolClass}
+                  visibleSubjects={visibleSubjects}
+                  remainingSubjects={remainingSubjects}
+                  schoolId={schoolId}
+                />
               );
             })}
           </div>

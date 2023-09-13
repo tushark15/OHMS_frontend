@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Alert, Card } from "react-bootstrap";
+import { Alert, Card, Form } from "react-bootstrap";
 import { useParams, useLocation } from "react-router-dom";
 import StudentForm from "../forms/StudentForm";
 import AddStudentCard from "../student/components/AddStudentCard";
@@ -12,18 +12,17 @@ import { useAuth } from "../hooks/auth-hook";
 
 const ClassDashboard = () => {
   const { schoolId, schoolClass } = useParams();
-  const { isAdmin } = useAuth();
+  const auth = useAuth();
   const [addStudent, setAddStudent] = useState(false);
   const [students, setStudents] = useState([]);
   const [responseData, setResponseData] = useState(undefined);
   const [schoolClasses, setSchoolClasses] = useState([]);
+  const [selectedSubject, setSelectedSubject] = useState("");
+  const [currentClassSubjects, setCurrentClassSubjects] = useState({});
   const [classExists, setClassExists] = useState(false);
+  const [currentStaff, setCurrentStaff] = useState({});
 
   const { error, sendRequest, clearError } = useHttpClient();
-
-  const location = useLocation();
-  const currentClass = location.state?.currentClass || "";
-  const currentClassSubjects = location.state?.currentClassSubjects || [];
 
   useEffect(() => {
     const fetchData = async () => {
@@ -33,9 +32,8 @@ const ClassDashboard = () => {
         );
         setResponseData(fetchedData);
         setSchoolClasses(fetchedData.schoolClasses);
-      } catch (err) {
-        // Handle errors if necessary
-      }
+        setCurrentClassSubjects(fetchedData.classSubjects);
+      } catch (err) {}
     };
     fetchData();
   }, [schoolId]);
@@ -48,12 +46,23 @@ const ClassDashboard = () => {
         );
         console.log(fetchedData);
         setStudents(fetchedData);
-      } catch (err) {
-        // Handle errors if necessary
-      }
+      } catch (err) {}
     };
     fetchData();
   }, [schoolId]);
+
+  useEffect(() => {
+    const staff = localStorage.getItem("currentUser");
+    if (staff) {
+      setCurrentStaff(JSON.parse(staff));
+    }
+  }, []);
+
+  useEffect(() => {
+    if (currentStaff.staffSubjects && currentStaff.staffSubjects[schoolClass]) {
+      console.log(currentStaff.staffSubjects[schoolClass]);
+    }
+  }, [currentStaff, schoolClass]);
 
   const handleAddStudent = () => {
     setAddStudent(true);
@@ -63,39 +72,28 @@ const ClassDashboard = () => {
     setStudents((prevStudents) => [...prevStudents, newStudent]);
   };
 
-  // useEffect(() => {
-  //   console.log("in class dashboard", students);
-  // }, [students]);
-
   useEffect(() => {
     setClassExists(
       schoolClasses.some((eachClass) => eachClass.label === schoolClass)
     );
   }, [schoolClasses]);
 
-  // console.log("Class exists: ", classExists);
-  // useEffect(() => {
-  //   const savedStudents = localStorage.getItem("students");
-  //   // console.log("Retrieved students from localStorage:", savedStudents);
-  //   if (savedStudents) {
-  //     setStudents(JSON.parse(savedStudents));
-  //   }
-  // }, []);
-
-  // Save students to localStorage whenever the students state changes
-  // useEffect(() => {
-  //   if (students.length > 0) {
-  //     // console.log("Saving students to localStorage:", students);
-  //     localStorage.setItem("students", JSON.stringify(students));
-  //   }
-  // }, [students]);
-
   const handleDelete = (index) => {
     setStudents((prevStudents) => prevStudents.filter((_, i) => i !== index));
   };
+  // useEffect(()=>{
+  //   console.log(selectedSubject)
+  // },[selectedSubject])
 
   return (
     <>
+      {error && (
+        <ErrorModal
+          error={error}
+          onClose={clearError}
+          onClearError={resetForm}
+        />
+      )}
       {classExists && (
         <div
           className="d-flex flex-column align-items-start gap-5"
@@ -106,7 +104,31 @@ const ClassDashboard = () => {
             marginLeft: "15px",
           }}
         >
-          <HomeworkUpload />
+          <div>
+            <Form.Select
+              style={{
+                width: "100%",
+              }}
+              onChange={(e) => setSelectedSubject(e.target.value)}
+              value={selectedSubject}
+            >
+              <option value="">Select Your subjects</option>
+              {!currentStaff.isAdmin
+                ? currentStaff.staffSubjects &&
+                  currentStaff.staffSubjects[schoolClass] &&
+                  currentStaff.staffSubjects[schoolClass].map((subject) => (
+                    <option key={subject.label} value={subject.value}>
+                      {subject.label}
+                    </option>
+                  ))
+                : currentClassSubjects[schoolClass].map((subject) => (
+                    <option key={subject.label} value={subject.value}>
+                      {subject.label}
+                    </option>
+                  ))}
+            </Form.Select>
+          </div>
+          <HomeworkUpload selectedSubject={selectedSubject} />
           <div className="d-flex flex-row gap-4">
             {students.length === 0 ? (
               <Alert variant="danger">
@@ -121,7 +143,7 @@ const ClassDashboard = () => {
                 />
               ))
             )}
-            {isAdmin && <AddStudentCard onClick={handleAddStudent} />}
+            {auth.user.isAdmin && <AddStudentCard onClick={handleAddStudent} />}
             <StudentForm
               show={addStudent}
               onHide={() => setAddStudent(false)}

@@ -21,7 +21,7 @@ const initialValues = {
 
 const StaffSignupForm = (props) => {
   const navigate = useNavigate();
-  const { setAdminStatus } = useAuth();
+  const auth = useAuth();
 
   const { error, sendRequest, clearError } = useHttpClient();
   const {
@@ -50,7 +50,7 @@ const StaffSignupForm = (props) => {
             "Content-Type": "application/json",
           }
         );
-        setAdminStatus(responseData.isAdmin);
+        auth.login(responseData)
         navigate("/staff/school");
       } catch (err) {}
     },

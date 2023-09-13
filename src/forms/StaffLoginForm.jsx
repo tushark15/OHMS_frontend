@@ -16,7 +16,7 @@ const initialValues = {
 };
 
 const StaffLoginForm = (props) => {
-  const { setAdminStatus } = useAuth();
+  const auth = useAuth();
   const navigate = useNavigate();
   const { error, sendRequest, clearError } = useHttpClient();
   const {
@@ -41,7 +41,7 @@ const StaffLoginForm = (props) => {
             "Content-Type": "application/json",
           }
         );
-        setAdminStatus(responseData.isAdmin);
+        auth.login(responseData)
         console.log(responseData.isAdmin);
         navigate(`/staff/school/dashboard/${responseData.schoolId}`);
       } catch (err) {}
