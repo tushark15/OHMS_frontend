@@ -7,7 +7,7 @@ const AddStaffCard = (props) => {
   const navigate = useNavigate();
 
   const handleAddStaff = () => {
-    navigate(`/staff/school/dashboard/${props.schoolId}/addStaff`, {
+    navigate(`/staff/school/dashboard/addStaff/${props.schoolId}`, {
       state: {
         schoolClasses: props.schoolClasses,
         subjectsByClass: props.subjectsByClass,
@@ -17,7 +17,6 @@ const AddStaffCard = (props) => {
   };
   return (
     <>
-    
       <Card
         style={{ marginTop: "12vh", width: "90%" }}
         className="d-flex flex-row shadow-lg rounded-3 form-card border border-0 gap-5"

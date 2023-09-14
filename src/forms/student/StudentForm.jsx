@@ -14,6 +14,7 @@ const initialValues = {
   studentDOB: "",
   studentClass: "",
   schoolId: 0,
+  studentPassword: "",
 };
 
 const studentForm = (props) => {
@@ -160,6 +161,25 @@ const studentForm = (props) => {
                 {errors.studentContact}
               </Form.Control.Feedback>
             </Form.Group>
+            <Form.Group as={Col} controlId="studentPassword" className="mb-4">
+              <Form.Label>Student Password</Form.Label>
+              <Form.Control
+                type="number"
+                placeholder="Enter Student Password"
+                name="studentPassword"
+                value={values.studentPassword}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                isValid={touched.studentPassword && !errors.studentPassword}
+                isInvalid={touched.studentPassword && !!errors.studentPassword}
+              />
+              <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+              <Form.Control.Feedback type="invalid">
+                {errors.studentPassword}
+              </Form.Control.Feedback>
+            </Form.Group>
+          </Row>
+          <Row>
             <Form.Group as={Col} controlId="studentAddress" className="mb-4">
               <Form.Label>Student Address</Form.Label>
               <Form.Control

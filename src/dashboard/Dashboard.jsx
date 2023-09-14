@@ -89,7 +89,6 @@ const Dashboard = () => {
           <div
             className="d-flex flex-row flex-wrap align-items-start gap-5    "
             style={{
-              height: "100vh",
               marginTop: "12vh",
               marginLeft: "5vw",
               marginRight: "0",

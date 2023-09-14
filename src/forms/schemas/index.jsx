@@ -27,7 +27,7 @@ export const studentLoginSchema = object({
       (val) => typeof val === "number" && val.toString().length === 12
     )
     .required(),
-  password: string().min(8).required(),
+  studentPassword: string().min(8).required(),
 });
 
 export const schoolSchema = object({
@@ -98,6 +98,7 @@ export const studentSchema = object({
     ),
   studentClass: string().required(),
   schoolId: number().required(),
+  studentPassword: string().min(8).required()
 });
 
 export const staffSchema = object({

@@ -79,7 +79,7 @@ const SchoolForm = () => {
             "Content-Type": "application/json",
           }
         );
-        navigate(`dashboard/${responseData.schoolId}`);
+        navigate(`/staff/school/dashboard/${responseData.schoolId}`);
       } catch (err) {}
       console.log(values);
     },

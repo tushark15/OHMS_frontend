@@ -4,19 +4,33 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { useFormik } from "formik";
 import { studentLoginSchema } from "../schemas";
+import { useHttpClient } from "../../hooks/http-hook";
+import { useNavigate } from "react-router-dom";
 
 const initialValues = {
   studentId: 0,
-  password: "",
+  studentPassword: "",
 };
 
 const StaffLoginForm = (props) => {
+  const navigate = useNavigate()
+  const { error, sendRequest, clearError } = useHttpClient();
   const { values, handleChange, handleSubmit, handleBlur, touched, errors } =
     useFormik({
       initialValues: initialValues,
       validationSchema: studentLoginSchema,
-      onSubmit: (values) => {
+      onSubmit: async (values) => {
         console.log(values);
+        const fetchedData = await sendRequest(
+          "http://localhost:3000/api/student/login",
+          "POST",
+          JSON.stringify(values),
+          {
+            "Content-Type": "application/json",
+          }
+        );
+        console.log(fetchedData)
+        navigate(`/student/dashboard/${fetchedData.studentClass}/${fetchedData.studentId}`)
       },
     });
 
@@ -51,23 +65,23 @@ const StaffLoginForm = (props) => {
               </Form.Control.Feedback>
             </Form.Group>
 
-            <Form.Group className="mb-3" controlId="staffPassword">
+            <Form.Group className="mb-3" controlId="studentPassword">
               <Form.Label>Password</Form.Label>
               <Form.Control
                 type="password"
-                name="password"
+                name="studentPassword"
                 placeholder="Password"
                 required
-                value={values.password}
+                value={values.studentPassword}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                isValid={touched.password && !errors.password}
-                isInvalid={!!errors.password && touched.password}
+                isValid={touched.studentPassword && !errors.studentPassword}
+                isInvalid={!!errors.studentPassword && touched.studentPassword}
               />
               <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
               {
                 <Form.Control.Feedback type="invalid">
-                  {errors.password}
+                  {errors.studentPassword}
                 </Form.Control.Feedback>
               }
             </Form.Group>

@@ -14,7 +14,6 @@ const ClassDisplayCard = (props) => {
         const fetchedData = await sendRequest(
           `http://localhost:3000/api/student/${props.schoolId}/${props.schoolClass.value}`
         );
-        console.log(fetchedData);
         setStudents(fetchedData);
       } catch (err) {}
     };

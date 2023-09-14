@@ -78,22 +78,18 @@ const ClassDashboard = () => {
     );
   }, [schoolClasses]);
 
-  const handleDelete = (index) => {
+  const handleDelete = async (index, id) => {
+    try {
+      const responseData = await sendRequest(
+        `http://localhost:3000/api/student/${id}`,
+        "DELETE"
+      );
+    } catch (err) {}
     setStudents((prevStudents) => prevStudents.filter((_, i) => i !== index));
   };
-  // useEffect(()=>{
-  //   console.log(selectedSubject)
-  // },[selectedSubject])
 
   return (
     <>
-      {error && (
-        <ErrorModal
-          error={error}
-          onClose={clearError}
-          onClearError={resetForm}
-        />
-      )}
       {classExists && (
         <div
           className="d-flex flex-column align-items-start gap-5"
@@ -104,6 +100,7 @@ const ClassDashboard = () => {
             marginLeft: "15px",
           }}
         >
+          {error && <ErrorModal error={error} onClose={clearError} />}
           <div>
             <Form.Select
               style={{
@@ -139,7 +136,7 @@ const ClassDashboard = () => {
                 <StudentCard
                   key={index}
                   student={student}
-                  onDelete={() => handleDelete(index)}
+                  onDelete={() => handleDelete(index, student._id)}
                 />
               ))
             )}
@@ -156,7 +153,7 @@ const ClassDashboard = () => {
       )}
       {!classExists && (
         <div
-          className="d-flex flex-column align-items-start gap-5"
+          className="d-flex flex-row align-items-start justify-content-center gap-5"
           style={{
             height: "100vh",
             width: "100vw",
@@ -164,7 +161,7 @@ const ClassDashboard = () => {
             marginLeft: "15px",
           }}
         >
-          <h1>This class doesn't Exists</h1>
+          <Alert variant="danger">This class doesn't Exists</Alert>
         </div>
       )}
     </>
