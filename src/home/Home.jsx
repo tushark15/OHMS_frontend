@@ -1,6 +1,7 @@
 import React from "react";
 import Card from "react-bootstrap/Card";
 import student from "../assets/student.jpg";
+import teacher from "../images/teacher.jpg";
 const Home = () => {
   return (
     <div
@@ -33,7 +34,7 @@ const Home = () => {
               className="text-decoration-none d-flex flex-column justify-content-center align-items-center"
               href="/staff/login"
             >
-              <Card.Img variant="top" src={student} />
+              <Card.Img variant="top" src={teacher} />
               <h1 style={{ color: "black" }}>Staff</h1>
             </a>
           </Card.Body>

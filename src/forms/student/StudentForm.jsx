@@ -180,7 +180,7 @@ const studentForm = (props) => {
             </Form.Group>
           </Row>
           <Row>
-            <Form.Group as={Col} controlId="studentAddress" className="mb-4">
+             <Form.Group as={Col} controlId="studentAddress" className="mb-4">
               <Form.Label>Student Address</Form.Label>
               <Form.Control
                 type="text"

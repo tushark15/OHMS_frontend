@@ -2,12 +2,6 @@ import { Button } from "react-bootstrap";
 import React, { useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import fileImage from "../assets/OIP.jpeg";
-const thumbsContainer = {
-  display: "flex",
-  flexDirection: "row",
-  flexWrap: "wrap",
-  marginTop: 16,
-};
 
 const thumb = {
   display: "inline-flex",
@@ -33,9 +27,14 @@ const img = {
   height: "100px",
 };
 
+
+
 function HomeworkUpload(props) {
-  const [files, setFiles] = useState([]);
-  const [isSubjectSelected, setIsSubjectSelected] = useState(!props.isSubjectSelected);
+  const [file, setFile] = useState(null);
+  const [isSubjectSelected, setIsSubjectSelected] = useState(
+    !props.isSubjectSelected
+  );
+
   const { getRootProps, getInputProps } = useDropzone({
     accept: {
       "image/png": [".png"],
@@ -48,63 +47,48 @@ function HomeworkUpload(props) {
       "application/vnd.ms-excel": [".xls", ".xlsx"],
     },
     onDrop: (acceptedFiles) => {
-      acceptedFiles.forEach((file) => {
-        const fileType = file.type;
-        console.log(`File name: ${file.name}, File type: ${fileType}`);
-      });
-      setFiles(
-        acceptedFiles.map((file) =>
-          Object.assign(file, {
-            preview: URL.createObjectURL(file),
+      if (acceptedFiles.length > 0) {
+        const selectedFile = acceptedFiles[0];
+        const fileType = selectedFile.type;
+        console.log(`File name: ${selectedFile.name}, File type: ${fileType}`);
+        setFile(
+          Object.assign(selectedFile, {
+            preview: URL.createObjectURL(selectedFile),
           })
-        ),
-        console.log(acceptedFiles)
-      );
+        );
+        props.sendFile(selectedFile)
+      }
     },
   });
+  console.log(file)
 
   useEffect(() => {
     if (props.selectedSubject) {
       setIsSubjectSelected(false);
-    }
-    else{
+    } else {
       setIsSubjectSelected(true);
     }
   }, [props.selectedSubject]);
 
-  const thumbs = files.map((file) => (
-    <div style={thumb} key={file.name}>
-      {file.type === "image/png" || file.type === "image/jpeg" ? (
-        <div style={thumbInner}>
-          <img
-            src={file.preview}
-            style={img}
-            onLoad={() => {
-              URL.revokeObjectURL(file.preview);
-            }}
-          />
-        </div>
-      ) : (
-        <div style={thumbInner}>
-          <img src={fileImage} />
-        </div>
-      )}
-    </div>
-  ));
-
   const handleFileSubmit = () => {
-    if (files.length > 0) {
-      console.log("files are submitted", files);
-      setFiles([]);
+    if (file) {
+      console.log("File is submitted", file);
+      setFile(null);
     }
   };
 
   useEffect(() => {
-    return () => files.forEach((file) => URL.revokeObjectURL(file.preview));
-  }, []);
+    if (file) {
+      return () => URL.revokeObjectURL(file.preview);
+    }
+  }, [file]);
+
+
+
+
 
   return (
-    <section className="container">
+    <section className="container" style={{width:"90%"}}>
       <div
         {...getRootProps({
           className: "dropzone d-flex justify-content-center p-5",
@@ -114,10 +98,25 @@ function HomeworkUpload(props) {
         <input {...getInputProps()} />
         <p>Drag 'n' drop Homework, or click to select Homework</p>
       </div>
-      <aside style={thumbsContainer}>{thumbs}</aside>
-      <Button onClick={handleFileSubmit} disabled={isSubjectSelected}>
-        Submit
-      </Button>
+      {file && (
+        <div style={thumb}>
+          {file.type === "image/png" || file.type === "image/jpeg" ? (
+            <div style={thumbInner}>
+              <img
+                src={file.preview}
+                style={img}
+                onLoad={() => {
+                  URL.revokeObjectURL(file.preview);
+                }}
+              />
+            </div>
+          ) : (
+            <div style={thumbInner}>
+              <img src={fileImage} alt="File" />
+            </div>
+          )}
+        </div>
+      )}
     </section>
   );
 }

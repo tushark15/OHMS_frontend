@@ -41,6 +41,7 @@ const StaffLoginForm = (props) => {
         );
         auth.login(responseData)
         navigate(`/staff/school/dashboard/${responseData.schoolId}`);
+        window.location.reload();
       } catch (err) {}
     },
   });

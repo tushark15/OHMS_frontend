@@ -12,7 +12,6 @@ const MAX_SUBJECTS = 3;
 const Dashboard = () => {
   const [currentStaff, setCurrentStaff] = useState({});
   const [responseData, setResponseData] = useState(undefined);
-  const [classesToDisplay, setClassesToDisplay] = useState([]);
   const [schoolClasses, setSchoolClasses] = useState([]);
   const [subjectsByClass, setSubjectsByClass] = useState({});
 
@@ -21,6 +20,7 @@ const Dashboard = () => {
   const { error, sendRequest, clearError } = useHttpClient();
   const auth = useAuth();
 
+  // useEffect(()=>{window.location.reload()},[])
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -77,7 +77,7 @@ const Dashboard = () => {
             />
           )}
 
-          <div className="d-flex flex-column align-items-center">
+          {/* <div className="d-flex flex-column align-items-center">
             {auth.user.isAdmin && (
               <AddStaffCard
                 schoolClasses={schoolClasses}
@@ -85,7 +85,7 @@ const Dashboard = () => {
                 schoolId={schoolId}
               />
             )}
-          </div>
+          </div> */}
           <div
             className="d-flex flex-row flex-wrap align-items-start gap-5    "
             style={{

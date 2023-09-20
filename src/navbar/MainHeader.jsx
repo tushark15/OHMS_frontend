@@ -1,8 +1,10 @@
 import Navbar from "react-bootstrap/Navbar";
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useDebugValue } from "react";
 import Navlinks from "./Navlinks";
+import { useAuth } from "../hooks/auth-hook";
 const MainHeader = () => {
   const [currentStaff, setCurrentStaff] = useState({});
+  const auth = useAuth();
 
   useEffect(() => {
     const staff = localStorage.getItem("currentUser");
@@ -11,10 +13,9 @@ const MainHeader = () => {
     }
   }, []);
 
-  
   return (
     <Navbar collapseOnSelect expand="md" className="navbar" fixed="top">
-      <Navlinks currentStaff={currentStaff}/>
+      <Navlinks currentStaff={currentStaff} />
     </Navbar>
   );
 };

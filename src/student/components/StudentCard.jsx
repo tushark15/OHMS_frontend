@@ -4,6 +4,7 @@ import { useAuth } from "../../hooks/auth-hook";
 
 const StudentCard = ({ student, onDelete }) => {
   const auth = useAuth();
+  console.log(auth)
   return (
     <Card className="shadow-lg rounded-3 border border-0">
       <Card.Body>

@@ -120,33 +120,13 @@ export const staffSchema = object({
   isAdmin: boolean().required(),
 });
 
-const FILE_SIZE = 160 * 1024;
-const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/gif", "image/png"];
-
 export const homeworkSchema = object({
-  files: mixed()
-    .test("fileSize", "File Size is too large", (value) => {
-      if (value && value?.length > 0) {
-        for (let i = 0; i < value.length; i++) {
-          if (value[i].size > 5242880) {
-            return false;
-          }
-        }
-      }
-      return true;
-    })
-    .test("fileType", "Unsupported File Format", (value) => {
-      if (value && value.length > 0) {
-        for (let i = 0; i < value.length; i++) {
-          if (
-            value[i].type != "image/png" &&
-            value[i].type != "image/jpg" &&
-            value[i].type != "image/jpeg"
-          ) {
-            return false;
-          }
-        }
-      }
-      return true;
-    }),
+  schoolClass: string().required(),
+  classSubject : string().required(),
+  uploadDate : date().required(),
+  dueDate: date().required(),
+  staffId: string().required(),
+  homework : mixed().required(),
+  note: string().required(),
+  schoolId: number().required(),
 });

@@ -13,6 +13,7 @@ import React from "react";
 import { useAuth } from "./hooks/auth-hook";
 import { AuthContext } from "./context/auth-context";
 import SchoolForm from "./forms/school/SchoolForm";
+import About from "./about/About"
 
 function App() {
   const { login, logout, user } = useAuth();
@@ -24,11 +25,13 @@ function App() {
         logout,
       }}
     >
+        <MainHeader key={user?._id} />
       <Router>
-        <MainHeader />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/student/login" element={<StudentAuth />} />
+          <Route path="/aboutus" element={<About />} />
+
           <Route
             path="/student/dashboard/:studentClass/:studentId"
             element={<StudentDashboard />}

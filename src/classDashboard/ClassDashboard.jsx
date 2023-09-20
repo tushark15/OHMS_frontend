@@ -9,6 +9,7 @@ import { useHttpClient } from "../hooks/http-hook";
 import ErrorModal from "../components/ErrorModal";
 import { classes } from "../forms/school/SchoolForm";
 import { useAuth } from "../hooks/auth-hook";
+import HomeworkForm from "../forms/homework/HomeworkForm";
 
 const ClassDashboard = () => {
   const { schoolId, schoolClass } = useParams();
@@ -17,7 +18,6 @@ const ClassDashboard = () => {
   const [students, setStudents] = useState([]);
   const [responseData, setResponseData] = useState(undefined);
   const [schoolClasses, setSchoolClasses] = useState([]);
-  const [selectedSubject, setSelectedSubject] = useState("");
   const [currentClassSubjects, setCurrentClassSubjects] = useState({});
   const [classExists, setClassExists] = useState(false);
   const [currentStaff, setCurrentStaff] = useState({});
@@ -44,7 +44,6 @@ const ClassDashboard = () => {
         const fetchedData = await sendRequest(
           `http://localhost:3000/api/student/${schoolId}/${schoolClass}`
         );
-        console.log(fetchedData);
         setStudents(fetchedData);
       } catch (err) {}
     };
@@ -91,41 +90,23 @@ const ClassDashboard = () => {
   return (
     <>
       {classExists && (
+        <>
         <div
-          className="d-flex flex-column align-items-start gap-5"
+          className="d-flex flex-column align-items-center gap-5"
           style={{
-            height: "100vh",
+            marginBottom: "10vh",
             width: "100vw",
             marginTop: "12vh",
             marginLeft: "15px",
           }}
         >
           {error && <ErrorModal error={error} onClose={clearError} />}
-          <div>
-            <Form.Select
-              style={{
-                width: "100%",
-              }}
-              onChange={(e) => setSelectedSubject(e.target.value)}
-              value={selectedSubject}
-            >
-              <option value="">Select Your subjects</option>
-              {!currentStaff.isAdmin
-                ? currentStaff.staffSubjects &&
-                  currentStaff.staffSubjects[schoolClass] &&
-                  currentStaff.staffSubjects[schoolClass].map((subject) => (
-                    <option key={subject.label} value={subject.value}>
-                      {subject.label}
-                    </option>
-                  ))
-                : currentClassSubjects[schoolClass].map((subject) => (
-                    <option key={subject.label} value={subject.value}>
-                      {subject.label}
-                    </option>
-                  ))}
-            </Form.Select>
+          <HomeworkForm
+            currentStaff={currentStaff}
+            schoolClass={schoolClass}
+            currentClassSubjects={currentClassSubjects}
+          />
           </div>
-          <HomeworkUpload selectedSubject={selectedSubject} />
           <div className="d-flex flex-row gap-4">
             {students.length === 0 ? (
               <Alert variant="danger">
@@ -149,7 +130,8 @@ const ClassDashboard = () => {
               schoolId={schoolId}
             />
           </div>
-        </div>
+        
+        </>
       )}
       {!classExists && (
         <div

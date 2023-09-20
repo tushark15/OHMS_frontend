@@ -30,6 +30,8 @@ const StaffForm = (props) => {
   const [subjectsByClass, setSubjectsByClass] = useState({});
   const { schoolId } = useParams();
 
+  // console.log(schoolId)
+
   const {
     values,
     handleBlur,
@@ -53,8 +55,9 @@ const StaffForm = (props) => {
       };
       const modifiedValues = {
         ...values,
-        schoolId: schoolId,
+        schoolId: parseInt(schoolId),
       };
+      console.log(modifiedValues);
       try {
         const responseData = await sendRequest(
           "http://localhost:3000/api/staff/addStaff",
@@ -69,7 +72,6 @@ const StaffForm = (props) => {
       setSelectedStaffClasses([]);
       setSelectedStaffSubjects({});
       resetForm();
-      console.log({ values });
     },
   });
 
