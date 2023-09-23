@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
@@ -6,6 +6,7 @@ import { useFormik } from "formik";
 import { studentLoginSchema } from "../schemas";
 import { useHttpClient } from "../../hooks/http-hook";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../hooks/auth-hook";
 
 const initialValues = {
   studentId: 0,
@@ -15,12 +16,12 @@ const initialValues = {
 const StaffLoginForm = (props) => {
   const navigate = useNavigate()
   const { error, sendRequest, clearError } = useHttpClient();
+  const auth = useAuth()
   const { values, handleChange, handleSubmit, handleBlur, touched, errors } =
     useFormik({
       initialValues: initialValues,
       validationSchema: studentLoginSchema,
       onSubmit: async (values) => {
-        console.log(values);
         const fetchedData = await sendRequest(
           "http://localhost:3000/api/student/login",
           "POST",
@@ -30,6 +31,7 @@ const StaffLoginForm = (props) => {
           }
         );
         console.log(fetchedData)
+        auth.login(fetchedData, fetchedData.token)
         navigate(`/student/dashboard/${fetchedData.studentClass}/${fetchedData.studentId}`)
       },
     });

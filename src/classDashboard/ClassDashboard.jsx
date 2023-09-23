@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Alert, Card, Form } from "react-bootstrap";
-import { useParams, useLocation } from "react-router-dom";
+import { Alert} from "react-bootstrap";
+import { useParams } from "react-router-dom";
 import StudentForm from "../forms/student/StudentForm";
 import AddStudentCard from "../student/components/AddStudentCard";
 import StudentCard from "../student/components/StudentCard";
-import HomeworkUpload from "../homework/HomeworkUpload";
 import { useHttpClient } from "../hooks/http-hook";
 import ErrorModal from "../components/ErrorModal";
-import { classes } from "../forms/school/SchoolForm";
 import { useAuth } from "../hooks/auth-hook";
 import HomeworkForm from "../forms/homework/HomeworkForm";
 
@@ -24,31 +22,42 @@ const ClassDashboard = () => {
 
   const { error, sendRequest, clearError } = useHttpClient();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const fetchedData = await sendRequest(
-          `http://localhost:3000/api/school/${schoolId}`
-        );
-        setResponseData(fetchedData);
-        setSchoolClasses(fetchedData.schoolClasses);
-        setCurrentClassSubjects(fetchedData.classSubjects);
-      } catch (err) {}
-    };
-    fetchData();
-  }, [schoolId]);
+  const fetchSchoolData = async () => {
+    if (!auth.token) return;
+
+    try {
+      const fetchedData = await sendRequest(
+        `http://localhost:3000/api/school/${schoolId}`,
+        "GET",
+        null,
+        { Authorization: "Bearer " + auth.token }
+      );
+      setResponseData(fetchedData);
+      setSchoolClasses(fetchedData.schoolClasses);
+      setCurrentClassSubjects(fetchedData.classSubjects);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const fetchData = async () => {
+    if (!auth.token) return;
+    try {
+      const fetchedData = await sendRequest(
+        `http://localhost:3000/api/student/${schoolId}/${schoolClass}`,
+        "GET",
+        null,
+        { Authorization: "Bearer " + auth.token }
+      );
+      setStudents(fetchedData);
+    } catch (err) {}
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const fetchedData = await sendRequest(
-          `http://localhost:3000/api/student/${schoolId}/${schoolClass}`
-        );
-        setStudents(fetchedData);
-      } catch (err) {}
-    };
+    fetchSchoolData();
+
     fetchData();
-  }, [schoolId]);
+  }, [auth.token]);
 
   useEffect(() => {
     const staff = localStorage.getItem("currentUser");
@@ -57,11 +66,6 @@ const ClassDashboard = () => {
     }
   }, []);
 
-  useEffect(() => {
-    if (currentStaff.staffSubjects && currentStaff.staffSubjects[schoolClass]) {
-      console.log(currentStaff.staffSubjects[schoolClass]);
-    }
-  }, [currentStaff, schoolClass]);
 
   const handleAddStudent = () => {
     setAddStudent(true);
@@ -77,11 +81,15 @@ const ClassDashboard = () => {
     );
   }, [schoolClasses]);
 
+
   const handleDelete = async (index, id) => {
+    if(!auth.token) return;
     try {
       const responseData = await sendRequest(
         `http://localhost:3000/api/student/${id}`,
-        "DELETE"
+        "DELETE",
+        null,
+        {Authorization: "Bearer " + auth.token}
       );
     } catch (err) {}
     setStudents((prevStudents) => prevStudents.filter((_, i) => i !== index));
@@ -91,21 +99,21 @@ const ClassDashboard = () => {
     <>
       {classExists && (
         <>
-        <div
-          className="d-flex flex-column align-items-center gap-5"
-          style={{
-            marginBottom: "10vh",
-            width: "100vw",
-            marginTop: "12vh",
-            marginLeft: "15px",
-          }}
-        >
-          {error && <ErrorModal error={error} onClose={clearError} />}
-          <HomeworkForm
-            currentStaff={currentStaff}
-            schoolClass={schoolClass}
-            currentClassSubjects={currentClassSubjects}
-          />
+          <div
+            className="d-flex flex-column align-items-center gap-5"
+            style={{
+              marginBottom: "10vh",
+              width: "100vw",
+              marginTop: "12vh",
+              marginLeft: "15px",
+            }}
+          >
+            {error && <ErrorModal error={error} onClose={clearError} />}
+            <HomeworkForm
+              currentStaff={currentStaff}
+              schoolClass={schoolClass}
+              currentClassSubjects={currentClassSubjects}
+            />
           </div>
           <div className="d-flex flex-row gap-4">
             {students.length === 0 ? (
@@ -130,7 +138,6 @@ const ClassDashboard = () => {
               schoolId={schoolId}
             />
           </div>
-        
         </>
       )}
       {!classExists && (

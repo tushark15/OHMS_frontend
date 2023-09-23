@@ -14,7 +14,6 @@ const MultiSelect = ({
   const [options, setOptions] = useState([]);
 
   useEffect(() => {
-    // Update options when defaultOptions change
     setOptions(defaultOptions);
   }, [defaultOptions]);
 
@@ -33,11 +32,10 @@ const MultiSelect = ({
     }, 1000);
   };
 
-  //custom styles for creatableSelect
   const customStyles = {
     control: (provided) => ({
       ...provided,
-      width: style && style.width ? style.width : "100%", // Apply width from style prop or default to 100%
+      width: style && style.width ? style.width : "100%", 
     }),
     multiValue: (provided) => {
       return {
@@ -56,7 +54,6 @@ const MultiSelect = ({
         isDisabled={isLoading}
         isLoading={isLoading}
         onChange={(newValue) => {
-          //setValue(newValue);
           setSelectedValues(newValue);
         }}
         onCreateOption={handleCreate}

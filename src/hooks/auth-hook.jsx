@@ -1,28 +1,35 @@
 import { useCallback, useEffect, useState } from "react";
 export function useAuth() {
   const [user, setUser] = useState({});
+  const [token, setToken] = useState(null);
 
-  const login = useCallback((user) => {
-    setUser(user);
-    localStorage.setItem("currentUser", JSON.stringify(user));
+
+  const login = useCallback((userParam, tokenParam) => {
+    setUser(userParam);
+    setToken(tokenParam);
+    localStorage.setItem(
+      "currentUser",
+      JSON.stringify({
+        user: userParam,
+        token: tokenParam,
+      })
+    );
   }, []);
-  // (userdata) => {
-  //   console.log({ userdata});
-  //   setUser(userdata);
-  //   localStorage.setItem("currentUser", JSON.stringify(userdata));
-  // };
+
 
   const logout = useCallback(() => {
-    setUser(null);
+    setToken(null);
+    setUser({});
     localStorage.removeItem("currentUser");
   }, []);
 
-  useEffect(()=>{
-    const storedData = localStorage.getItem("currentUser");
-    if (storedData){
-      login(JSON.parse(storedData))
-    }
-  },[login])
 
-  return { login, logout, user };
+  useEffect(() => {
+    const storedData = JSON.parse(localStorage.getItem("currentUser"));
+    if (storedData && storedData.token) {
+      login(storedData.user, storedData.token);
+    }
+  }, [login]);
+
+  return { login, logout, user, token };
 }

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Card, Col, Form, Row } from "react-bootstrap";
 import MultiSelect from "../../components/MultiSelect";
-import { initialValues } from "../school/SchoolForm";
 
 const ClassAndSubject = ({
   selectedClasses,
@@ -22,7 +21,6 @@ const ClassAndSubject = ({
   };
 
   useEffect(() => {
-    console.log(selectedSubjectsByClass);
     setValues({ ...values, classSubjects: selectedSubjectsByClass });
   }, [selectedSubjectsByClass]);
 

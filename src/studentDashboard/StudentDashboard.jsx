@@ -2,37 +2,48 @@ import React, { useEffect, useState } from "react";
 import { useHttpClient } from "../hooks/http-hook";
 import { useParams } from "react-router-dom";
 import SubjectDisplayCard from "./SubjectDisplayCard";
+import { useAuth } from "../hooks/auth-hook";
 
 const StudentDashboard = () => {
   const { studentClass, studentId } = useParams();
   const [responseData, setResponseData] = useState({});
   const [subjects, setSubjects] = useState([]);
   const { error, sendRequest, clearError } = useHttpClient();
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const fetchedData = await sendRequest(
-          `http://localhost:3000/api/student/${studentId}`
-        );
-        setResponseData(fetchedData);
-      } catch (err) {}
-    };
-    fetchData();
-  }, [studentId]);
+  const auth = useAuth();
+
+  const fetchData = async () => {
+    if (!auth.token) return;
+    try {
+      console.log(auth.token);
+      const fetchedData = await sendRequest(
+        `http://localhost:3000/api/student/${studentId}`,
+        "GET",
+        null,
+        { Authorization: "Bearer " + auth.token }
+      );
+      setResponseData(fetchedData);
+    } catch (err) {}
+  };
+  const fetchSchoolData = async () => {
+    if (!auth.token) return;
+    try {
+      const fetchedData = await sendRequest(
+        `http://localhost:3000/api/school/${responseData.schoolId}`,
+        "GET",
+        null,
+        { Authorization: "Bearer " + auth.token }
+      );
+      setSubjects(fetchedData.classSubjects[studentClass]);
+    } catch (err) {}
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const fetchedData = await sendRequest(
-          `http://localhost:3000/api/school/${responseData.schoolId}`
-        );
-        setSubjects(fetchedData.classSubjects[studentClass]);
-      } catch (err) {}
-    };
     fetchData();
+  }, [auth.token]);
+
+  useEffect(() => {
+    fetchSchoolData();
   }, [responseData]);
-
-  //   console.log(subjects)
 
   {
     if (subjects.length > 0) {
@@ -40,7 +51,6 @@ const StudentDashboard = () => {
         <div
           className="d-flex flex-row flex-wrap align-items-start gap-5    "
           style={{
-    
             marginTop: "12vh",
             marginLeft: "5vw",
             marginRight: "0",

@@ -4,7 +4,6 @@ import Navlinks from "./Navlinks";
 import { useAuth } from "../hooks/auth-hook";
 const MainHeader = () => {
   const [currentStaff, setCurrentStaff] = useState({});
-  const auth = useAuth();
 
   useEffect(() => {
     const staff = localStorage.getItem("currentUser");

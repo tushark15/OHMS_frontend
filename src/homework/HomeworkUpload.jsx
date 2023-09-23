@@ -1,4 +1,3 @@
-import { Button } from "react-bootstrap";
 import React, { useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import fileImage from "../assets/OIP.jpeg";
@@ -50,7 +49,6 @@ function HomeworkUpload(props) {
       if (acceptedFiles.length > 0) {
         const selectedFile = acceptedFiles[0];
         const fileType = selectedFile.type;
-        console.log(`File name: ${selectedFile.name}, File type: ${fileType}`);
         setFile(
           Object.assign(selectedFile, {
             preview: URL.createObjectURL(selectedFile),
@@ -60,7 +58,6 @@ function HomeworkUpload(props) {
       }
     },
   });
-  console.log(file)
 
   useEffect(() => {
     if (props.selectedSubject) {
@@ -72,7 +69,6 @@ function HomeworkUpload(props) {
 
   const handleFileSubmit = () => {
     if (file) {
-      console.log("File is submitted", file);
       setFile(null);
     }
   };

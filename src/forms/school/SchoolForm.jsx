@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
@@ -11,6 +11,7 @@ import { useFormik } from "formik";
 import { schoolSchema } from "../schemas";
 import { useHttpClient } from "../../hooks/http-hook";
 import ErrorModal from "../../components/ErrorModal";
+import { useAuth } from "../../hooks/auth-hook";
 export const classes = [
   { value: "Nursery", label: "Nursery" },
   { value: "KG", label: "KG" },
@@ -57,6 +58,7 @@ export const initialValues = {
 const SchoolForm = () => {
   const { error, sendRequest, clearError } = useHttpClient();
   const navigate = useNavigate();
+  const auth = useAuth();
   const {
     values,
     handleChange,
@@ -70,6 +72,7 @@ const SchoolForm = () => {
     initialValues: initialValues,
     validationSchema: schoolSchema,
     onSubmit: async (values) => {
+      if(!auth.token) return;
       try {
         const responseData = await sendRequest(
           "http://localhost:3000/api/school/",
@@ -77,11 +80,11 @@ const SchoolForm = () => {
           JSON.stringify(values),
           {
             "Content-Type": "application/json",
+            Authorization: "Bearer" + auth.token
           }
         );
         navigate(`/staff/school/dashboard/${responseData.schoolId}`);
       } catch (err) {}
-      console.log(values);
     },
   });
 

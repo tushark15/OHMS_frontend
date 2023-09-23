@@ -5,6 +5,7 @@ import { useFormik } from "formik";
 import { homeworkSchema } from "../schemas";
 import { useParams } from "react-router-dom";
 import { useHttpClient } from "../../hooks/http-hook";
+import { useAuth } from "../../hooks/auth-hook";
 
 const initialValues = {
   schoolClass: "",
@@ -27,13 +28,14 @@ const HomeworkForm = (props) => {
   const year = currentDate.getFullYear();
   const formattedDate = `${year}-${month}-${day}`;
   const { error, sendRequest, clearError } = useHttpClient();
+  const auth = useAuth();
 
   const { values, handleChange, handleSubmit, handleBlur, touched, errors, resetForm } =
     useFormik({
       initialValues: initialValues,
       validationSchema: homeworkSchema,
       onSubmit: async (values) => {
-        console.log(values);
+        if(!auth.token) return
         try {
           const responseData = await sendRequest(
             "http://localhost:3000/api/homework",
@@ -41,10 +43,9 @@ const HomeworkForm = (props) => {
             JSON.stringify(values),
             {
               "Content-Type": "application/json",
+              Authorization: "Bearer " + auth.token
             }
           );
-
-          console.log("responseData", responseData);
         } catch (err) {}
         setFile(null)
         resetForm();
@@ -52,7 +53,7 @@ const HomeworkForm = (props) => {
     });
 
   values.schoolClass = props.schoolClass;
-  values.staffId = props.currentStaff._id;
+  values.staffId = props.currentStaff.user._id;
   values.schoolId = parseInt(schoolId);
 
   useEffect(() => {
@@ -73,10 +74,6 @@ const HomeworkForm = (props) => {
     return currentDate;
   };
 
-  // useEffect(() => {
-  //   console.log(values);
-  // }, [values]);
-
   return (
     <div style={{width: "90%"}}>
     <Form noValidate onSubmit={handleSubmit}>
@@ -95,10 +92,10 @@ const HomeworkForm = (props) => {
             value={selectedSubject}
           >
             <option value="">Select Your subjects</option>
-            {!props.currentStaff.isAdmin
-              ? props.currentStaff.staffSubjects &&
-                props.currentStaff.staffSubjects[props.schoolClass] &&
-                props.currentStaff.staffSubjects[props.schoolClass].map(
+            {!props.currentStaff.user.isAdmin
+              ? props.currentStaff.user.staffSubjects &&
+                props.currentStaff.user.staffSubjects[props.schoolClass] &&
+                props.currentStaff.user.staffSubjects[props.schoolClass].map(
                   (subject) => (
                     <option key={subject.label} value={subject.value}>
                       {subject.label}

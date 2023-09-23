@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Card, Form, Button, Row, Col } from "react-bootstrap";
 import MultiSelect from "../../components/MultiSelect";
-import { useLocation, useParams } from "react-router-dom";
-import ClassAndSubject from "../formComponents/ClassAndSubject";
+import { useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import { staffSchema } from "../schemas";
 import { useHttpClient } from "../../hooks/http-hook";
 import StaffList from "../../staff/components/StaffList";
 import ErrorModal from "../../components/ErrorModal";
+import { useAuth } from "../../hooks/auth-hook";
 
 const initialValues = {
   staffName: "",
@@ -19,7 +19,7 @@ const initialValues = {
   isAdmin: false,
 };
 
-const StaffForm = (props) => {
+const StaffForm = () => {
   const [selectedStaffClasses, setSelectedStaffClasses] = useState([]);
   const [selectedStaffSubjects, setSelectedStaffSubjects] = useState({});
   const [staff, setStaff] = useState([]);
@@ -29,8 +29,7 @@ const StaffForm = (props) => {
   const [schoolClasses, setSchoolClasses] = useState([]);
   const [subjectsByClass, setSubjectsByClass] = useState({});
   const { schoolId } = useParams();
-
-  // console.log(schoolId)
+  const auth = useAuth();
 
   const {
     values,
@@ -57,7 +56,7 @@ const StaffForm = (props) => {
         ...values,
         schoolId: parseInt(schoolId),
       };
-      console.log(modifiedValues);
+      if (!auth.token) return;
       try {
         const responseData = await sendRequest(
           "http://localhost:3000/api/staff/addStaff",
@@ -65,6 +64,7 @@ const StaffForm = (props) => {
           JSON.stringify(modifiedValues),
           {
             "Content-Type": "application/json",
+            Authorization: "Bearer " + auth.token,
           }
         );
       } catch (err) {}
@@ -74,22 +74,24 @@ const StaffForm = (props) => {
       resetForm();
     },
   });
+  const fetchData = async () => {
+    if(!auth.token) return;
+    try {
+      const fetchedData = await sendRequest(
+        `http://localhost:3000/api/school/${schoolId}`,
+        "GET",
+        null,
+        { Authorization: "Bearer " + auth.token }
+      );
+      setResponseData(fetchedData);
+      setSchoolClasses(fetchedData.schoolClasses);
+      setSubjectsByClass(fetchedData.classSubjects);
+    } catch (err) {}
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const fetchedData = await sendRequest(
-          `http://localhost:3000/api/school/${schoolId}`
-        );
-        setResponseData(fetchedData);
-        setSchoolClasses(fetchedData.schoolClasses);
-        setSubjectsByClass(fetchedData.classSubjects);
-      } catch (err) {
-        // Handle errors if necessary
-      }
-    };
     fetchData();
-  }, [schoolId]);
+  }, [auth.token]);
 
   const handleStaffClasses = (selectedOptions) => {
     setValues({ ...values, staffClasses: selectedOptions });
@@ -103,7 +105,6 @@ const StaffForm = (props) => {
   };
 
   const handleDeleteStaff = (deleteStaffId) => {
-    console.log(staff);
     setStaff((prevStaff) =>
       prevStaff.filter((staff) => staff.id !== deleteStaffId)
     );

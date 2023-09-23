@@ -2,18 +2,21 @@ import React from "react";
 import { Card, Button } from "react-bootstrap";
 import { useHttpClient } from "../../hooks/http-hook";
 import ErrorModal from "../../components/ErrorModal";
+import { useAuth } from "../../hooks/auth-hook";
 
 const StaffItem = (props) => {
   const { error, sendRequest, clearError } = useHttpClient();
+  const auth = useAuth()
 
   const handleDeleteStaff = async (id) => {
-    console.log(id);
+    if(!auth.token) return
     const responseData = await sendRequest(
       `http://localhost:3000/api/staff/${id}`,
-      "DELETE"
+      "DELETE",
+      null,
+      {Authorization: "Bearer " + auth.token}
     );
     props.onDelete(props.id);
-    console.log(responseData);
   };
   return (
     <>

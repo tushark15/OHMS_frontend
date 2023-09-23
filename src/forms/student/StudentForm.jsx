@@ -32,7 +32,7 @@ const studentForm = (props) => {
     initialValues: initialValues,
     validationSchema: studentSchema,
     onSubmit: async (values) => {
-      console.log(values.studentDOB);
+      if (!auth.token) return;
       try {
         const responseData = await sendRequest(
           "http://localhost:3000/api/student",
@@ -40,6 +40,7 @@ const studentForm = (props) => {
           JSON.stringify(values),
           {
             "Content-Type": "application/json",
+            Authorization: "Bearer " + auth.token
           }
         );
       } catch (err) {}
@@ -50,7 +51,7 @@ const studentForm = (props) => {
   });
 
   values.studentClass = props.schoolclass;
-  values.schoolId = props.schoolId;
+  values.schoolId = parseInt(props.schoolId);
 
   const maxAllowedDOB = () => {
     const currentDate = new Date();
@@ -164,7 +165,7 @@ const studentForm = (props) => {
             <Form.Group as={Col} controlId="studentPassword" className="mb-4">
               <Form.Label>Student Password</Form.Label>
               <Form.Control
-                type="number"
+                type="password"
                 placeholder="Enter Student Password"
                 name="studentPassword"
                 value={values.studentPassword}

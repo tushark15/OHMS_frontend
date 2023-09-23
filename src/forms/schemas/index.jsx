@@ -64,7 +64,7 @@ export const schoolSchema = object({
     "min-subjects",
     "Minimum of 1 subjects required",
     (value) => {
-      const minSubjectsCount = 1; // Set your desired minimum count
+      const minSubjectsCount = 1; 
       return Object.keys(value || {}).length >= minSubjectsCount;
     }
   ),
@@ -113,7 +113,7 @@ export const staffSchema = object({
     "min-subjects",
     "Minimum of 1 subjects required",
     (value) => {
-      const minSubjectsCount = 1; // Set your desired minimum count
+      const minSubjectsCount = 1; 
       return Object.keys(value || {}).length >= minSubjectsCount;
     }
   ),

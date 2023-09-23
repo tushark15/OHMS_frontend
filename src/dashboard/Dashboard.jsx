@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import "./Dashboard.css";
-import AddStaffCard from "../staff/components/AddStaffCard";
 import { useHttpClient } from "../hooks/http-hook";
 import ErrorModal from "../components/ErrorModal";
 import ClassDisplayCard from "./ClassDisplayCard";
@@ -19,23 +18,25 @@ const Dashboard = () => {
 
   const { error, sendRequest, clearError } = useHttpClient();
   const auth = useAuth();
-
-  // useEffect(()=>{window.location.reload()},[])
+  const fetchData = async () => {
+    if (!auth.token) return;
+    try {
+      const fetchedData = await sendRequest(
+        `http://localhost:3000/api/school/${schoolId}`,
+        "GET",
+        null,
+        { Authorization: "Bearer " + auth.token }
+      );
+      setResponseData(fetchedData);
+      setSchoolClasses(fetchedData.schoolClasses);
+      setSubjectsByClass(fetchedData.classSubjects);
+    } catch (err) {
+      console.error(err);
+    }
+  };
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const fetchedData = await sendRequest(
-          `http://localhost:3000/api/school/${schoolId}`
-        );
-        setResponseData(fetchedData);
-        setSchoolClasses(fetchedData.schoolClasses);
-        setSubjectsByClass(fetchedData.classSubjects);
-      } catch (err) {
-        // Handle errors if necessary
-      }
-    };
     fetchData();
-  }, [schoolId]);
+  }, [ auth.user]);
 
   useEffect(() => {
     const staff = localStorage.getItem("currentUser");
@@ -44,48 +45,11 @@ const Dashboard = () => {
     }
   }, []);
 
-  const isAdmin = currentStaff.isAdmin;
-
-  // useEffect(() => {
-  //   if (isAdmin) {
-  //     // If admin, show all school classes
-  //     setClassesToDisplay(schoolClasses);
-  //   } else {
-  //     // If not admin, filter classes for the current staff
-  //     const staffClasses = schoolClasses.filter((schoolClass) => {
-  //       // console.log(...currentStaff.staffClasses.map((staffClass) =>{
-  //       //   return staffClass.value === schoolClass.value
-  //       // }))
-  //       return currentStaff.staffClasses.map((staffClass) =>{
-  //         return staffClass.value === schoolClass.value
-  //       });
-  //     });
-  //     console.log(staffClasses)
-  //     setClassesToDisplay(staffClasses);
-  //   }
-  // }, [schoolClasses, currentStaff, isAdmin])
-
   {
     if (schoolClasses.length > 0) {
       return (
-        <div>
-          {error && (
-            <ErrorModal
-              error={error}
-              onClose={clearError}
-              onClearError={resetForm}
-            />
-          )}
-
-          {/* <div className="d-flex flex-column align-items-center">
-            {auth.user.isAdmin && (
-              <AddStaffCard
-                schoolClasses={schoolClasses}
-                subjectsByClass={subjectsByClass}
-                schoolId={schoolId}
-              />
-            )}
-          </div> */}
+        <div style={{ marginTop: "12vh" }}>
+          {error && <ErrorModal error={error} onClose={clearError} />}
           <div
             className="d-flex flex-row flex-wrap align-items-start gap-5    "
             style={{

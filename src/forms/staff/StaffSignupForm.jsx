@@ -36,7 +36,6 @@ const StaffSignupForm = (props) => {
     initialValues: initialValues,
     validationSchema: staffSignupSchema,
     onSubmit: async (values) => {
-      console.log(values);
       const modifiedValues = {
         ...values,
         isAdmin: true,
@@ -50,7 +49,7 @@ const StaffSignupForm = (props) => {
             "Content-Type": "application/json",
           }
         );
-        auth.login(responseData)
+        auth.login(responseData.createdStaffAdmin, responseData.token)
         navigate("/staff/school");
       } catch (err) {}
     },

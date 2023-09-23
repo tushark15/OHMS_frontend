@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
@@ -39,14 +39,14 @@ const StaffLoginForm = (props) => {
             "Content-Type": "application/json",
           }
         );
-        auth.login(responseData)
-        navigate(`/staff/school/dashboard/${responseData.schoolId}`);
+        auth.login(responseData.exisitingStaff, responseData.token)
+        navigate(`/staff/school/dashboard/${responseData.exisitingStaff.schoolId}`);
         window.location.reload();
-      } catch (err) {}
+      } catch (err) {
+        console.error(err)
+      }
     },
   });
-
-  
 
   return (
     <div

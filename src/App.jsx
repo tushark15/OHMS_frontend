@@ -13,19 +13,20 @@ import React from "react";
 import { useAuth } from "./hooks/auth-hook";
 import { AuthContext } from "./context/auth-context";
 import SchoolForm from "./forms/school/SchoolForm";
-import About from "./about/About"
+import About from "./about/About";
 
 function App() {
-  const { login, logout, user } = useAuth();
+  const { login, logout, user, token } = useAuth();
   return (
     <AuthContext.Provider
       value={{
         user,
+        token,
         login,
         logout,
       }}
     >
-        <MainHeader key={user?._id} />
+      <MainHeader key={user?._id} />
       <Router>
         <Routes>
           <Route path="/" element={<Home />} />
