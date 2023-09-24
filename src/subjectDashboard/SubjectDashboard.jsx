@@ -101,6 +101,7 @@ const subjectDashboard = () => {
                 {newHomework.map((eachHomework) => (
                   <HomeworkCard
                     key={eachHomework._id}
+                    name={eachHomework.homework}
                     id = {eachHomework._id}
                     subject={eachHomework.classSubject}
                     dueDate={eachHomework.dueDate}

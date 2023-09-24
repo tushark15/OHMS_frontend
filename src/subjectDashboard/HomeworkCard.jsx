@@ -3,14 +3,12 @@ import { Card, Button } from "react-bootstrap";
 import downloadIcon from "../images/download.png";
 import uploadIcon from "../images/upload.png";
 import { capitalizeFirstLetter } from "./subjectDashboard";
-import { useHttpClient } from "../hooks/http-hook";
 import { useAuth } from "../hooks/auth-hook";
 
 const HomeworkCard = (props) => {
-  const { error, sendRequest, clearError } = useHttpClient();
   const auth = useAuth();
-  const [downloadError, setDownloadError] = useState(null); // Track download errors
-
+  const [downloadError, setDownloadError] = useState(null); 
+  
   function formattedDate(dateObject) {
     if (dateObject === undefined) return;
     return dateObject.split("T")[0];
@@ -18,17 +16,37 @@ const HomeworkCard = (props) => {
 
   const handleDownload = async (id) => {
     try {
-      const fetchedHomework = await sendRequest(
+      const response = await fetch(
         `http://localhost:3000/api/homework/download/${id}`,
-        "GET",
-        null,
         {
-          Authorization: "Bearer " + auth.token,
+          method: "GET",
+          headers: {
+            Authorization: "Bearer " + auth.token,
+          },
         }
       );
-      console.log(fetchedHomework);
+      if (!response.ok) {
+        console.error("Download failed. Response status:", response.status);
+        throw new Error("Download failed.");
+      }
+
+      const fileName = props.name
+
+      const blob = await response.blob();
+
+      const blobUrl = URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.style.display = "none";
+      a.href = blobUrl;
+      a.download = fileName;
+      document.body.appendChild(a);
+
+      a.click();
+
+      window.URL.revokeObjectURL(blobUrl);
     } catch (err) {
-      console.log(err);
+      console.error("Download error:", err);
       setDownloadError(err.message || "An error occurred during download.");
     }
   };
