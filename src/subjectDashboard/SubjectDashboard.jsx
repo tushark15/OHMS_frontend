@@ -4,21 +4,20 @@ import { useHttpClient } from "../hooks/http-hook";
 import { useAuth } from "../hooks/auth-hook";
 import ErrorModal from "../components/ErrorModal";
 import HomeworkCard from "./HomeworkCard";
+import { Alert, Spinner } from "react-bootstrap";
 
 export function capitalizeFirstLetter(word) {
   return word.charAt(0).toUpperCase() + word.slice(1);
 }
 
-const subjectDashboard = () => {
+const SubjectDashboard = () => {
   const { subject } = useParams();
   const auth = useAuth();
   const { error, sendRequest, clearError } = useHttpClient();
-  const [responseData, setResponseData] = useState(undefined);
   const [currentClassSubjects, setCurrentClassSubjects] = useState([]);
   const [subjectExists, setSubjectExists] = useState(false);
-  const [currentStudent, setCurrentStudent] = useState({});
   const [homework, setHomework] = useState([]);
-
+  const [isLoading, setIsLoading] = useState(true); 
   const currentClass = auth.user.studentClass;
 
   const fetchSchoolData = async () => {
@@ -31,7 +30,6 @@ const subjectDashboard = () => {
         null,
         { Authorization: "Bearer " + auth.token }
       );
-      setResponseData(fetchedData);
       setCurrentClassSubjects(fetchedData.classSubjects[currentClass]);
     } catch (err) {
       console.log(err);
@@ -48,6 +46,7 @@ const subjectDashboard = () => {
         { Authorization: "Bearer " + auth.token }
       );
       setHomework(fetchedData);
+      setIsLoading(false); 
     } catch (err) {
       console.log(err);
     }
@@ -82,55 +81,84 @@ const subjectDashboard = () => {
 
   return (
     <>
-      {subjectExists && (
-        <>
+      {isLoading ? (
+        <div
+          className="d-flex flex-column align-items-center justify-content-center"
+          style={{
+            marginTop: "12vh",
+          }}
+        >
+          <Spinner animation="border" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </Spinner>
+        </div>
+      ) : (
+        subjectExists && (
+          <>
+            <div
+              className="d-flex flex-column align-items-center gap-3"
+              style={{
+                marginBottom: "10vh",
+                width: "100vw",
+                marginTop: "12vh",
+                marginLeft: "15px",
+              }}
+            >
+              <h2>{capitalizeFirstLetter(subject)}</h2>
+              {error && <ErrorModal error={error} onClose={clearError} />}
+              {newHomework.length > 0 && (
+                <>
+                  <h2>New Homework (Today)</h2>
+                  {newHomework.map((eachHomework) => (
+                    <HomeworkCard
+                      key={eachHomework._id}
+                      name={eachHomework.homework}
+                      id={eachHomework._id}
+                      subject={eachHomework.classSubject}
+                      dueDate={eachHomework.dueDate}
+                      note={eachHomework.note}
+                      uploadDate={eachHomework.uploadDate}
+                    />
+                  ))}
+                </>
+              )}
+              {oldHomework.length > 0 && (
+                <>
+                  <h2>Old Homework (Not Due Today)</h2>
+                  {oldHomework.map((eachHomework) => (
+                    <HomeworkCard
+                      key={eachHomework._id}
+                      id={eachHomework._id}
+                      subject={eachHomework.classSubject}
+                      dueDate={eachHomework.dueDate}
+                      note={eachHomework.note}
+                      uploadDate={eachHomework.uploadDate}
+                    />
+                  ))}
+                </>
+              )}
+            </div>
+          </>
+        )
+      )}
+      {!subjectExists &&
+        !isLoading &&
+        !newHomework.length &&
+        !oldHomework.length && (
           <div
-            className="d-flex flex-column align-items-center gap-3"
+            className="d-flex flex-row align-items-start justify-content-center gap-5"
             style={{
-              marginBottom: "10vh",
+              height: "100vh",
               width: "100vw",
               marginTop: "12vh",
               marginLeft: "15px",
             }}
           >
-            <h2>{capitalizeFirstLetter(subject)}</h2>
-            {error && <ErrorModal error={error} onClose={clearError} />}
-            {newHomework.length > 0 && (
-              <>
-                <h2>New Homework (Today)</h2>
-                {newHomework.map((eachHomework) => (
-                  <HomeworkCard
-                    key={eachHomework._id}
-                    name={eachHomework.homework}
-                    id = {eachHomework._id}
-                    subject={eachHomework.classSubject}
-                    dueDate={eachHomework.dueDate}
-                    note={eachHomework.note}
-                    uploadDate={eachHomework.uploadDate}
-                  />
-                ))}
-              </>
-            )}
-            {oldHomework.length > 0 && (
-              <>
-                <h2>Old Homework (Not Due Today)</h2>
-                {oldHomework.map((eachHomework) => (
-                  <HomeworkCard
-                    key={eachHomework._id}
-                    id = {eachHomework._id}
-                    subject={eachHomework.classSubject}
-                    dueDate={eachHomework.dueDate}
-                    note={eachHomework.note}
-                    uploadDate={eachHomework.uploadDate}
-                  />
-                ))}
-              </>
-            )}
+            <Alert variant="danger">This subject doesn't exist</Alert>
           </div>
-        </>
-      )}
+        )}
     </>
   );
 };
 
-export default subjectDashboard;
+export default SubjectDashboard;

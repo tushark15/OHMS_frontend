@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Alert} from "react-bootstrap";
+import { Alert, Spinner } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import StudentForm from "../forms/student/StudentForm";
 import AddStudentCard from "../student/components/AddStudentCard";
@@ -14,11 +14,11 @@ const ClassDashboard = () => {
   const auth = useAuth();
   const [addStudent, setAddStudent] = useState(false);
   const [students, setStudents] = useState([]);
-  const [responseData, setResponseData] = useState(undefined);
   const [schoolClasses, setSchoolClasses] = useState([]);
   const [currentClassSubjects, setCurrentClassSubjects] = useState({});
   const [classExists, setClassExists] = useState(false);
   const [currentStaff, setCurrentStaff] = useState({});
+  const [isLoading, setIsLoading] = useState(true); 
 
   const { error, sendRequest, clearError } = useHttpClient();
 
@@ -32,7 +32,6 @@ const ClassDashboard = () => {
         null,
         { Authorization: "Bearer " + auth.token }
       );
-      setResponseData(fetchedData);
       setSchoolClasses(fetchedData.schoolClasses);
       setCurrentClassSubjects(fetchedData.classSubjects);
     } catch (err) {
@@ -50,12 +49,12 @@ const ClassDashboard = () => {
         { Authorization: "Bearer " + auth.token }
       );
       setStudents(fetchedData);
+      setIsLoading(false);
     } catch (err) {}
   };
 
   useEffect(() => {
     fetchSchoolData();
-
     fetchData();
   }, [auth.token]);
 
@@ -65,7 +64,6 @@ const ClassDashboard = () => {
       setCurrentStaff(JSON.parse(staff));
     }
   }, []);
-
 
   const handleAddStudent = () => {
     setAddStudent(true);
@@ -81,19 +79,32 @@ const ClassDashboard = () => {
     );
   }, [schoolClasses]);
 
-
   const handleDelete = async (index, id) => {
-    if(!auth.token) return;
+    if (!auth.token) return;
     try {
       const responseData = await sendRequest(
         `http://localhost:3000/api/student/${id}`,
         "DELETE",
         null,
-        {Authorization: "Bearer " + auth.token}
+        { Authorization: "Bearer " + auth.token }
       );
     } catch (err) {}
     setStudents((prevStudents) => prevStudents.filter((_, i) => i !== index));
   };
+
+  if (isLoading) {
+    return (
+      <div
+        className="d-flex flex-column justify-content-center align-items-center"
+        style={{ height: "100vh" }}
+      >
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </Spinner>
+        <h3>Loading...</h3>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -150,7 +161,7 @@ const ClassDashboard = () => {
             marginLeft: "15px",
           }}
         >
-          <Alert variant="danger">This class doesn't Exists</Alert>
+          <Alert variant="danger">This class doesn't exist</Alert>
         </div>
       )}
     </>

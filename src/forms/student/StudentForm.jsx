@@ -1,6 +1,6 @@
 import { useFormik } from "formik";
-import React from "react";
-import { Modal, Form, Row, Col, Button } from "react-bootstrap";
+import React, { useState } from "react";
+import { Modal, Form, Row, Col, Button, Spinner } from "react-bootstrap";
 import { studentSchema } from "../schemas";
 import { useHttpClient } from "../../hooks/http-hook";
 import { useAuth } from "../../hooks/auth-hook";
@@ -19,6 +19,7 @@ const initialValues = {
 
 const studentForm = (props) => {
   const { error, sendRequest, clearError } = useHttpClient();
+  const [isLoading, setIsLoading] = useState(false);
   const auth = useAuth();
   const {
     values,
@@ -32,6 +33,7 @@ const studentForm = (props) => {
     initialValues: initialValues,
     validationSchema: studentSchema,
     onSubmit: async (values) => {
+      setIsLoading(true);
       if (!auth.token) return;
       try {
         const responseData = await sendRequest(
@@ -40,10 +42,11 @@ const studentForm = (props) => {
           JSON.stringify(values),
           {
             "Content-Type": "application/json",
-            Authorization: "Bearer " + auth.token
+            Authorization: "Bearer " + auth.token,
           }
         );
       } catch (err) {}
+      setIsLoading(false);
       props.onStudentAdd(values);
       props.onHide();
       resetForm();
@@ -181,7 +184,7 @@ const studentForm = (props) => {
             </Form.Group>
           </Row>
           <Row>
-             <Form.Group as={Col} controlId="studentAddress" className="mb-4">
+            <Form.Group as={Col} controlId="studentAddress" className="mb-4">
               <Form.Label>Student Address</Form.Label>
               <Form.Control
                 type="text"
@@ -200,7 +203,22 @@ const studentForm = (props) => {
               </Form.Control.Feedback>
             </Form.Group>
           </Row>
-          <Button type="submit">Add Student</Button>
+          <Button type="submit" disabled={isLoading}>
+            {isLoading ? (
+              <>
+                <Spinner
+                  as="span"
+                  animation="border"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                />
+                Submitting...
+              </>
+            ) : (
+              "Add Student"
+            )}
+          </Button>
         </Form>
       </Modal.Body>
     </Modal>

@@ -48,7 +48,6 @@ function HomeworkUpload(props) {
     onDrop: (acceptedFiles) => {
       if (acceptedFiles.length > 0) {
         const selectedFile = acceptedFiles[0];
-        const fileType = selectedFile.type;
         setFile(
           Object.assign(selectedFile, {
             preview: URL.createObjectURL(selectedFile),
@@ -67,21 +66,11 @@ function HomeworkUpload(props) {
     }
   }, [props.selectedSubject]);
 
-  const handleFileSubmit = () => {
-    if (file) {
-      setFile(null);
-    }
-  };
-
   useEffect(() => {
     if (file) {
       return () => URL.revokeObjectURL(file.preview);
     }
   }, [file]);
-
-
-
-
 
   return (
     <section className="container" style={{width:"90%"}}>

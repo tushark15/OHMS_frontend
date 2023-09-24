@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Form, Button, Row, Col } from "react-bootstrap";
+import { Form, Button, Row, Col, Spinner } from "react-bootstrap"; 
 import HomeworkUpload from "../../homework/HomeworkUpload";
 import { useFormik } from "formik";
 import { homeworkSchema } from "../schemas";
@@ -22,6 +22,7 @@ const HomeworkForm = (props) => {
   const { schoolId } = useParams();
   const [selectedSubject, setSelectedSubject] = useState("");
   const [file, setFile] = useState(null);
+  const [isLoading, setIsLoading] = useState(false); 
   const currentDate = new Date();
   const day = currentDate.getDate();
   const month = currentDate.getMonth() + 1;
@@ -29,7 +30,6 @@ const HomeworkForm = (props) => {
   const formattedDate = `${year}-${month}-${day}`;
   const { error, sendRequest, clearError } = useHttpClient();
   const auth = useAuth();
-  const [formDataReady, setFormDataReady] = useState(false);
   const formData = new FormData();
   const {
     values,
@@ -43,8 +43,7 @@ const HomeworkForm = (props) => {
     initialValues: initialValues,
     validationSchema: homeworkSchema,
     onSubmit: async (values) => {
-      console.log(values.homework);
-
+      setIsLoading(true); 
       formData.append("homework", values.homework);
       formData.append("schoolClass", values.schoolClass);
       formData.append("classSubject", values.classSubject);
@@ -64,21 +63,16 @@ const HomeworkForm = (props) => {
             Authorization: "Bearer " + auth.token,
           }
         );
-        console.log("Form Data:", formData);
-        setFormDataReady(true);
-      } catch (err) {}
-      setFile(null);
+        setSelectedSubject("");
+        setFile(null);
+      } catch (err) {
+        setIsLoading(false); 
+      }
       resetForm();
+      setIsLoading(false); 
     },
   });
 
-  useEffect(() => {
-    if (formDataReady) {
-      console.log(formData);
-    }
-  }, [formData, formDataReady]);
-
-  // console.log(formData);
   values.schoolClass = props.schoolClass;
   values.staffId = props.currentStaff.user._id;
   values.schoolId = parseInt(schoolId);
@@ -91,6 +85,7 @@ const HomeworkForm = (props) => {
   useEffect(() => {
     values.homework = file;
   }, [file]);
+
   const recieveFile = (file) => {
     setFile(file);
   };
@@ -174,7 +169,22 @@ const HomeworkForm = (props) => {
             </Form.Control.Feedback>
           </Form.Group>
         </Row>
-        <Button type="submit">Submit</Button>
+        <Button type="submit" disabled={isLoading}>
+          {isLoading ? (
+            <>
+              <Spinner
+                as="span"
+                animation="border"
+                size="sm"
+                role="status"
+                aria-hidden="true"
+              />
+              Submitting...
+            </>
+          ) : (
+            "Submit"
+          )}
+        </Button>
       </Form>
     </div>
   );

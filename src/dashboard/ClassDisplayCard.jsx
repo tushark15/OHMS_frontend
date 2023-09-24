@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Card } from "react-bootstrap";
+import { Card, Spinner } from "react-bootstrap"; 
 import { useNavigate } from "react-router-dom";
 import { useHttpClient } from "../hooks/http-hook";
 import { useAuth } from "../hooks/auth-hook";
@@ -7,6 +7,7 @@ import { useAuth } from "../hooks/auth-hook";
 const ClassDisplayCard = (props) => {
   const navigate = useNavigate();
   const [students, setStudents] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const { error, sendRequest, clearError } = useHttpClient();
   const auth = useAuth();
 
@@ -19,17 +20,19 @@ const ClassDisplayCard = (props) => {
         null,
         { Authorization: "Bearer " + auth.token }
       );
-
       setStudents(fetchedData);
+      setIsLoading(false); 
     } catch (err) {}
   };
+
   useEffect(() => {
     fetchData();
-  }, [props.schoolId]);
+  }, [auth.token]);
 
   const handleClick = (schoolClassLabel) => {
     navigate(`/staff/school/dashboard/${props.schoolId}/${schoolClassLabel}`);
   };
+
   return (
     <Card
       key={props.schoolClass.value}
@@ -43,9 +46,12 @@ const ClassDisplayCard = (props) => {
     >
       <Card.Body>
         <Card.Title>{props.schoolClass.label}</Card.Title>
-        <Card.Text>{`Total Students : ${students.length}`}</Card.Text>
+        {isLoading ? (
+          <Spinner animation="border" size="sm" />
+        ) : (
+          <Card.Text>{`Total Students : ${students.length}`}</Card.Text>
+        )}
         <Card.Text>
-          {" "}
           Subjects : {props.visibleSubjects.join(", ")}
           {props.remainingSubjects > 0 && ` ... (+${props.remainingSubjects})`}
         </Card.Text>

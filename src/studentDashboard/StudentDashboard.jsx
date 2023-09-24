@@ -3,18 +3,19 @@ import { useHttpClient } from "../hooks/http-hook";
 import { useParams } from "react-router-dom";
 import SubjectDisplayCard from "./SubjectDisplayCard";
 import { useAuth } from "../hooks/auth-hook";
+import { Spinner } from "react-bootstrap";
 
 const StudentDashboard = () => {
   const { studentClass, studentId } = useParams();
   const [responseData, setResponseData] = useState({});
   const [subjects, setSubjects] = useState([]);
+  const [isLoading, setIsLoading] = useState(true); 
   const { error, sendRequest, clearError } = useHttpClient();
   const auth = useAuth();
 
   const fetchData = async () => {
     if (!auth.token) return;
     try {
-      console.log(auth.token);
       const fetchedData = await sendRequest(
         `http://localhost:3000/api/student/${studentId}`,
         "GET",
@@ -24,6 +25,7 @@ const StudentDashboard = () => {
       setResponseData(fetchedData);
     } catch (err) {}
   };
+
   const fetchSchoolData = async () => {
     if (!auth.token) return;
     try {
@@ -34,6 +36,7 @@ const StudentDashboard = () => {
         { Authorization: "Bearer " + auth.token }
       );
       setSubjects(fetchedData.classSubjects[studentClass]);
+      setIsLoading(false); 
     } catch (err) {}
   };
 
@@ -45,34 +48,46 @@ const StudentDashboard = () => {
     fetchSchoolData();
   }, [responseData]);
 
-  {
-    if (subjects.length > 0) {
-      return (
-        <div
-          className="d-flex flex-row flex-wrap align-items-start gap-5    "
-          style={{
-            marginTop: "12vh",
-            marginLeft: "5vw",
-            marginRight: "0",
-          }}
-        >
-          {subjects.map((subject) => {
-            return (
-              <SubjectDisplayCard key={subject.value} subject={subject.label} />
-            );
-          })}
-        </div>
-      );
-    } else {
-      return (
-        <div
-          className="d-flex flex-column align-items-center"
-          style={{ height: "100vh", width: "100vw", marginTop: "12vh" }}
-        >
-          No Subjects Found
-        </div>
-      );
-    }
+  if (isLoading) {
+    return (
+      <div
+        className="d-flex flex-column justify-content-center align-items-center"
+        style={{ height: "100vh" }}
+      >
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </Spinner>
+        <h3>Loading...</h3>
+      </div>
+    );
+  }
+
+  if (subjects.length > 0) {
+    return (
+      <div
+        className="d-flex flex-row flex-wrap align-items-start gap-5"
+        style={{
+          marginTop: "12vh",
+          marginLeft: "5vw",
+          marginRight: "0",
+        }}
+      >
+        {subjects.map((subject) => {
+          return (
+            <SubjectDisplayCard key={subject.value} subject={subject.label} />
+          );
+        })}
+      </div>
+    );
+  } else {
+    return (
+      <div
+        className="d-flex flex-column align-items-center"
+        style={{ height: "100vh", width: "100vw", marginTop: "12vh" }}
+      >
+        No Subjects Found
+      </div>
+    );
   }
 };
 
