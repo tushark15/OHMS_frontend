@@ -157,7 +157,7 @@ const HomeworkForm = (props) => {
             </Form.Control.Feedback>
           </Form.Group>
           <Form.Group as={Col} controlId="note" className="mb-4">
-            <Form.Label>Student Address</Form.Label>
+            <Form.Label>Note</Form.Label>
             <Form.Control
               type="text"
               placeholder="Enter Note"
