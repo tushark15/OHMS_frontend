@@ -3,10 +3,12 @@ import StaffItem from "./StaffItem";
 import { useHttpClient } from "../../hooks/http-hook";
 import ErrorModal from "../../components/ErrorModal";
 import { useAuth } from "../../hooks/auth-hook";
+import { Spinner } from "react-bootstrap";
 
 const StaffList = (props) => {
   const { error, sendRequest, clearError } = useHttpClient();
   const [responseData, setResponseData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const auth = useAuth();
   const fetchData = async () => {
     if (!auth.token) return;
@@ -18,11 +20,23 @@ const StaffList = (props) => {
         { Authorization: "Bearer " + auth.token }
       );
       setResponseData(fetchedData);
-    } catch (err) {}
+    } catch (err) {
+    } finally {
+      setIsLoading(false);
+    }
   };
   useEffect(() => {
     fetchData();
   }, [props.staff, auth.token]);
+  if (isLoading) {
+    return (
+      <div className="d-flex justify-content-center mt-4">
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </Spinner>
+      </div>
+    );
+  }
   if (responseData.length === 0) {
     return (
       <div>
