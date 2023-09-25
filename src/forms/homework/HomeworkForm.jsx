@@ -101,7 +101,7 @@ const HomeworkForm = (props) => {
       <Form noValidate onSubmit={handleSubmit}>
         <FileUpload
           sendFile={recieveFile}
-          selectedSubject={selectedSubject}
+          for="Homework"
         />
         <Row>
           <Form.Group as={Col} controlId="classSubject" className="mb-4">

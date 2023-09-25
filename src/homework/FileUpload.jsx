@@ -30,9 +30,6 @@ const img = {
 
 function FileUpload(props) {
   const [file, setFile] = useState(null);
-  const [isSubjectSelected, setIsSubjectSelected] = useState(
-    !props.isSubjectSelected
-  );
 
   const { getRootProps, getInputProps } = useDropzone({
     accept: {
@@ -59,14 +56,6 @@ function FileUpload(props) {
   });
 
   useEffect(() => {
-    if (props.selectedSubject) {
-      setIsSubjectSelected(false);
-    } else {
-      setIsSubjectSelected(true);
-    }
-  }, [props.selectedSubject]);
-
-  useEffect(() => {
     if (file) {
       return () => URL.revokeObjectURL(file.preview);
     }
@@ -81,7 +70,7 @@ function FileUpload(props) {
         })}
       >
         <input {...getInputProps()} />
-        <p>Drag 'n' drop Homework, or click to select Homework</p>
+        <p>{`Drag 'n' drop ${props.for}, or click to select ${props.for}`}</p>
       </div>
       {file && (
         <div style={thumb}>
