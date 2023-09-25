@@ -127,6 +127,17 @@ export const homeworkSchema = object({
   dueDate: date().required(),
   staffId: string().required(),
   homework : mixed().required(),
-  note: string().required(),
+  note: string(),
   schoolId: number().required(),
+});
+
+export const submissionSchema = object({
+  schoolClass: string().required(),
+  classSubject : string().required(),
+  uploadDate : date().required(),
+  studentId: number().required(),
+  submission : mixed().required(),
+  note: string(),
+  schoolId: number().required(),
+  homeworkId: string().required(),
 });

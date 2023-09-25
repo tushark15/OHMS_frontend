@@ -4,11 +4,13 @@ import downloadIcon from "../images/download.png";
 import uploadIcon from "../images/upload.png";
 import { capitalizeFirstLetter } from "./subjectDashboard";
 import { useAuth } from "../hooks/auth-hook";
+import Submission from "../submission/Submission";
 
 const HomeworkCard = (props) => {
   const auth = useAuth();
-  const [downloadError, setDownloadError] = useState(null); 
-  
+  const [downloadError, setDownloadError] = useState(null);
+  const [submissionForm, setSubmissionForm] = useState(false);
+
   function formattedDate(dateObject) {
     if (dateObject === undefined) return;
     return dateObject.split("T")[0];
@@ -30,7 +32,7 @@ const HomeworkCard = (props) => {
         throw new Error("Download failed.");
       }
 
-      const fileName = props.name
+      const fileName = props.name;
 
       const blob = await response.blob();
 
@@ -75,70 +77,76 @@ const HomeworkCard = (props) => {
   const cardClassName = getCardClassName();
 
   return (
-    <Card
-      className={`shadow-lg rounded-3 classCard ${cardClassName}`}
-      style={{
-        width: "90%",
-        padding: "10px",
-        height: "auto",
-        border:
-          cardClassName === "card-past-due"
-            ? "5px solid red"
-            : cardClassName === "card-today"
-            ? "5px solid yellow"
-            : "",
-      }}
-    >
-      <Card.Body className="d-flex justify-content-between align-items-center">
-        <div className="d-flex gap-5">
-          <Card.Text
-            style={{
-              fontSize: "1.2rem",
-            }}
-          >
-            Due: {formattedDate(props.dueDate)} | Uploaded:{" "}
-            {formattedDate(props.uploadDate)}
-          </Card.Text>
-        </div>
-        <div>
-          <Button
-            variant="success"
-            style={{
-              width: "50px",
-              height: "45px",
-              marginRight: "10px",
-            }}
-            onClick={() => {
-              handleDownload(props.id); // Pass the homework's unique ID
-            }}
-          >
-            <img
-              src={downloadIcon}
-              alt="Download Icon"
-              style={{ width: "100%", height: "100%" }}
-            />
-          </Button>
-          <Button
-            variant="primary"
-            style={{
-              width: "50px",
-              height: "45px",
-            }}
-            disabled={dueDatePassed}
-          >
-            <img
-              src={uploadIcon}
-              alt="Upload Icon"
-              style={{ width: "100%", height: "100%" }}
-            />
-          </Button>
-        </div>
-      </Card.Body>
-      <Card.Footer style={{ marginTop: "10px" }}>
-        <Card.Text>{capitalizeFirstLetter(props.note)}</Card.Text>
-      </Card.Footer>
-      {downloadError && <p style={{ color: "red" }}>{downloadError}</p>}
-    </Card>
+    <>
+      <Card
+        className={`shadow-lg rounded-3 classCard ${cardClassName}`}
+        style={{
+          width: "90%",
+          padding: "10px",
+          height: "auto",
+          border:
+            cardClassName === "card-past-due"
+              ? "5px solid red"
+              : cardClassName === "card-today"
+              ? "5px solid yellow"
+              : "",
+        }}
+      >
+        <Card.Body className="d-flex justify-content-between align-items-center">
+          <div className="d-flex gap-5">
+            <Card.Text
+              style={{
+                fontSize: "1.2rem",
+              }}
+            >
+              Due: {formattedDate(props.dueDate)} | Uploaded:{" "}
+              {formattedDate(props.uploadDate)}
+            </Card.Text>
+          </div>
+          <div>
+            <Button
+              variant="success"
+              style={{
+                width: "50px",
+                height: "45px",
+                marginRight: "10px",
+              }}
+              onClick={() => {
+                handleDownload(props.id); // Pass the homework's unique ID
+              }}
+            >
+              <img
+                src={downloadIcon}
+                alt="Download Icon"
+                style={{ width: "100%", height: "100%" }}
+              />
+            </Button>
+            <Button
+              variant="primary"
+              style={{
+                width: "50px",
+                height: "45px",
+              }}
+              disabled={dueDatePassed}
+              onClick={() => {
+                setSubmissionForm(true);
+              }}
+            >
+              <img
+                src={uploadIcon}
+                alt="Upload Icon"
+                style={{ width: "100%", height: "100%" }}
+              />
+            </Button>
+          </div>
+        </Card.Body>
+        <Card.Footer style={{ marginTop: "10px" }}>
+          <Card.Text>{capitalizeFirstLetter(props.note)}</Card.Text>
+        </Card.Footer>
+        {downloadError && <p style={{ color: "red" }}>{downloadError}</p>}
+      </Card>
+      {submissionForm && <Submission show={submissionForm} setSubmissionForm={setSubmissionForm} homeworkId={props.id}/>}
+    </>
   );
 };
 
