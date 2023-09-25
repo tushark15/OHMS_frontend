@@ -12,6 +12,7 @@ export function capitalizeFirstLetter(word) {
 
 const SubjectDashboard = () => {
   const { subject } = useParams();
+  const formattedSubject = subject.replace(/ /g, '_');
   const auth = useAuth();
   const { error, sendRequest, clearError } = useHttpClient();
   const [currentClassSubjects, setCurrentClassSubjects] = useState([]);
@@ -66,13 +67,16 @@ const SubjectDashboard = () => {
   const today = new Date().toLocaleDateString();
   const newHomework = homework.filter(
     (eachHomework) =>
-      eachHomework.classSubject === subject &&
+      eachHomework.classSubject === formattedSubject &&
       new Date(eachHomework.uploadDate).toLocaleDateString() === today
   );
 
+  newHomework.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
+
+
   const oldHomework = homework.filter(
     (eachHomework) =>
-      eachHomework.classSubject === subject &&
+      eachHomework.classSubject === formattedSubject &&
       new Date(eachHomework.dueDate).toLocaleDateString() !== today &&
       new Date(eachHomework.uploadDate).toLocaleDateString() !== today
   );
@@ -104,7 +108,7 @@ const SubjectDashboard = () => {
                 marginLeft: "15px",
               }}
             >
-              <h2>{capitalizeFirstLetter(subject)}</h2>
+              <h2>{capitalizeFirstLetter(formattedSubject)}</h2>
               {error && <ErrorModal error={error} onClose={clearError} />}
               {newHomework.length > 0 && (
                 <>
