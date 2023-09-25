@@ -28,7 +28,7 @@ const img = {
 
 
 
-function HomeworkUpload(props) {
+function FileUpload(props) {
   const [file, setFile] = useState(null);
   const [isSubjectSelected, setIsSubjectSelected] = useState(
     !props.isSubjectSelected
@@ -106,4 +106,4 @@ function HomeworkUpload(props) {
   );
 }
 
-export default HomeworkUpload;
+export default FileUpload;

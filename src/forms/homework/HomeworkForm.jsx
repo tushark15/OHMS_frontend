@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Form, Button, Row, Col, Spinner } from "react-bootstrap"; 
-import HomeworkUpload from "../../homework/HomeworkUpload";
+import FileUpload from "../../homework/FileUpload";
 import { useFormik } from "formik";
 import { homeworkSchema } from "../schemas";
 import { useParams } from "react-router-dom";
@@ -99,7 +99,7 @@ const HomeworkForm = (props) => {
   return (
     <div style={{ width: "90%" }}>
       <Form noValidate onSubmit={handleSubmit}>
-        <HomeworkUpload
+        <FileUpload
           sendFile={recieveFile}
           selectedSubject={selectedSubject}
         />
