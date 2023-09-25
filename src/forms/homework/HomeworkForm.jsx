@@ -163,7 +163,6 @@ const HomeworkForm = (props) => {
               isValid={touched.note && !errors.note}
               isInvalid={touched.note && !!errors.note}
             />
-            <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
             <Form.Control.Feedback type="invalid">
               {errors.note}
             </Form.Control.Feedback>
