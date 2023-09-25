@@ -63,6 +63,7 @@ const SubmissionForm = (props) => {
         );
         setFile(null);
         resetForm();
+        props.onHide()
       } catch (err) {
         console.log(err)
       }
