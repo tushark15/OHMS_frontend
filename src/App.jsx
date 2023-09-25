@@ -15,6 +15,7 @@ import { AuthContext } from "./context/auth-context";
 import SchoolForm from "./forms/school/SchoolForm";
 import About from "./about/About";
 import SubjectDashboard from "./subjectDashboard/SubjectDashboard"
+import SubmissionDashboard from "./submissionDashboard/SubmissionDashboard";
 
 function App() {
   const { login, logout, user, token } = useAuth();
@@ -48,6 +49,10 @@ function App() {
           <Route
             path="/staff/school/dashboard/:schoolId/:schoolClass"
             element={<ClassDashboard />}
+          />
+          <Route
+            path="/staff/school/dashboard/:schoolId/:schoolClass/:studentId"
+            element={<SubmissionDashboard />}
           />
           <Route
             path="/staff/school/dashboard/:schoolId"
