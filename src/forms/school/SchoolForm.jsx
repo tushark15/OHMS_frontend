@@ -59,6 +59,7 @@ const SchoolForm = () => {
   const { error, sendRequest, clearError } = useHttpClient();
   const navigate = useNavigate();
   const auth = useAuth();
+  console.log(auth.token)
   const {
     values,
     handleChange,
@@ -80,11 +81,13 @@ const SchoolForm = () => {
           JSON.stringify(values),
           {
             "Content-Type": "application/json",
-            Authorization: "Bearer" + auth.token
+            Authorization: "Bearer " + auth.token,
           }
         );
         navigate(`/staff/school/dashboard/${responseData.schoolId}`);
-      } catch (err) {}
+      } catch (err) {
+        console.log(err)
+      }
     },
   });
 
