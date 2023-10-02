@@ -40,8 +40,8 @@ function App() {
             element={<StudentDashboard />}
           />
           <Route path="/staff/login" element={<StaffAuth />} />
-          <Route path="/staff/school" element={<SchoolForm />} />
           <Route path="/staff/school/student" element={<StudentForm />} />
+          <Route path="/staff/school/:schoolId" element={<SchoolForm />} />
           <Route
             path="/staff/school/dashboard/addStaff/:schoolId"
             element={<StaffForm />}
