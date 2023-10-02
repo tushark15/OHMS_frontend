@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Card, Button } from "react-bootstrap";
 import downloadIcon from "../images/download.png";
 import uploadIcon from "../images/upload.png";
-import { capitalizeFirstLetter } from "./subjectDashboard";
+import { capitalizeFirstLetter } from "./SubjectDashboard";
 import { useAuth } from "../hooks/auth-hook";
 import Submission from "../submission/Submission";
 
