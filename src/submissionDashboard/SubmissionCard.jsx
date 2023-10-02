@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Card, Button } from "react-bootstrap";
-import { capitalizeFirstLetter } from "../subjectDashboard/subjectDashboard";
+import { capitalizeFirstLetter } from "../subjectDashboard/SubjectDashboard";
 import downloadIcon from "../images/download.png";
 import { useAuth } from "../hooks/auth-hook";
 
