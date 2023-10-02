@@ -1,7 +1,7 @@
 import React from "react";
 import { Card } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { capitalizeFirstLetter } from "../subjectDashboard/subjectDashboard";
+import { capitalizeFirstLetter } from "../subjectDashboard/SubjectDashboard";
 
 
 const SubjectDisplayCard = (props) => {
