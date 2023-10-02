@@ -1,6 +1,6 @@
 import React from "react";
 import Card from "react-bootstrap/Card";
-import student from "../assets/student.jpg";
+import student from "../images/student.jpg";
 import teacher from "../images/teacher.jpg";
 const Home = () => {
   return (
