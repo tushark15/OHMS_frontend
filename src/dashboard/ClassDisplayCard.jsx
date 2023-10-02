@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Card, Spinner } from "react-bootstrap"; 
+import { Card, Spinner } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useHttpClient } from "../hooks/http-hook";
 import { useAuth } from "../hooks/auth-hook";
@@ -15,13 +15,15 @@ const ClassDisplayCard = (props) => {
     if (!auth.token) return;
     try {
       const fetchedData = await sendRequest(
-        `http://localhost:3000/api/student/${props.schoolId}/${props.schoolClass.value}`,
+        `${import.meta.env.VITE_APP_BACKEND_URL}/api/student/${
+          props.schoolId
+        }/${props.schoolClass.value}`,
         "GET",
         null,
         { Authorization: "Bearer " + auth.token }
       );
       setStudents(fetchedData);
-      setIsLoading(false); 
+      setIsLoading(false);
     } catch (err) {}
   };
 

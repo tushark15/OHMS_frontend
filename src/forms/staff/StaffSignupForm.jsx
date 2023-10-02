@@ -42,14 +42,14 @@ const StaffSignupForm = (props) => {
       };
       try {
         const responseData = await sendRequest(
-          "http://localhost:3000/api/staff/signup",
+          `${import.meta.env.VITE_APP_BACKEND_URL}/api/staff/signup`,
           "POST",
           JSON.stringify(modifiedValues),
           {
             "Content-Type": "application/json",
           }
         );
-        auth.login(responseData.createdStaffAdmin, responseData.token)
+        auth.login(responseData.createdStaffAdmin, responseData.token);
         navigate(`/staff/school/${values.schoolId}`);
       } catch (err) {}
     },
@@ -59,7 +59,13 @@ const StaffSignupForm = (props) => {
       className="d-flex flex-column justify-content-center align-items-center"
       style={{ height: "100vh" }}
     >
-      {error && <ErrorModal error={error} onClose={clearError} onClearError={resetForm} />}
+      {error && (
+        <ErrorModal
+          error={error}
+          onClose={clearError}
+          onClearError={resetForm}
+        />
+      )}
       <Card style={{ width: "45vw", height: "auto" }} className=" ">
         <Card.Body className="mt-2">
           <Card.Title className="mb-4">Signup</Card.Title>

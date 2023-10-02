@@ -14,7 +14,7 @@ const StaffList = (props) => {
     if (!auth.token) return;
     try {
       const fetchedData = await sendRequest(
-        `http://localhost:3000/api/staff/${props.schoolId}`,
+        `${import.meta.env.VITE_APP_BACKEND_URL}/api/staff/${props.schoolId}`,
         "GET",
         null,
         { Authorization: "Bearer " + auth.token }

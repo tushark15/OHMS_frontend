@@ -12,7 +12,7 @@ const MAX_SUBJECTS = 3;
 const Dashboard = () => {
   const [schoolClasses, setSchoolClasses] = useState([]);
   const [subjectsByClass, setSubjectsByClass] = useState({});
-  const [isLoading, setIsLoading] = useState(true); 
+  const [isLoading, setIsLoading] = useState(true);
 
   const { schoolId } = useParams();
 
@@ -23,14 +23,14 @@ const Dashboard = () => {
     if (!auth.token) return;
     try {
       const fetchedData = await sendRequest(
-        `http://localhost:3000/api/school/${schoolId}`,
+        `${import.meta.env.VITE_APP_BACKEND_URL}/api/school/${schoolId}`,
         "GET",
         null,
         { Authorization: "Bearer " + auth.token }
       );
       setSchoolClasses(fetchedData.schoolClasses);
       setSubjectsByClass(fetchedData.classSubjects);
-      setIsLoading(false); 
+      setIsLoading(false);
     } catch (err) {
       console.error(err);
     }
@@ -39,7 +39,6 @@ const Dashboard = () => {
   useEffect(() => {
     fetchData();
   }, [auth.user]);
-
 
   if (isLoading) {
     return (

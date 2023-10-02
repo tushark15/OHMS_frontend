@@ -56,7 +56,7 @@ export const initialValues = {
 };
 
 const SchoolForm = () => {
-  const  {schoolId} = useParams();
+  const { schoolId } = useParams();
   const { error, sendRequest, clearError } = useHttpClient();
   const navigate = useNavigate();
   const auth = useAuth();
@@ -73,10 +73,10 @@ const SchoolForm = () => {
     initialValues: initialValues,
     validationSchema: schoolSchema,
     onSubmit: async (values) => {
-      if(!auth.token) return;
+      if (!auth.token) return;
       try {
         const responseData = await sendRequest(
-          "http://localhost:3000/api/school/",
+          `${import.meta.env.VITE_APP_BACKEND_URL}/api/school/`,
           "POST",
           JSON.stringify(values),
           {
@@ -86,7 +86,7 @@ const SchoolForm = () => {
         );
         navigate(`/staff/school/dashboard/${responseData.schoolId}`);
       } catch (err) {
-        console.log(err)
+        console.log(err);
       }
     },
   });
@@ -136,11 +136,7 @@ const SchoolForm = () => {
                 </Form.Group>
                 <Form.Group as={Col} controlId="schoolName" className="mb-4">
                   <Form.Label>School ID</Form.Label>
-                  <Form.Control
-                    readOnly
-                    plaintext
-                    defaultValue={schoolId}
-                  />
+                  <Form.Control readOnly plaintext defaultValue={schoolId} />
                 </Form.Group>
               </Row>
               <Form.Group className="mb-4" controlId="schoolAddress">

@@ -14,25 +14,27 @@ const initialValues = {
 };
 
 const StaffLoginForm = (props) => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const { error, sendRequest, clearError } = useHttpClient();
-  const auth = useAuth()
+  const auth = useAuth();
   const { values, handleChange, handleSubmit, handleBlur, touched, errors } =
     useFormik({
       initialValues: initialValues,
       validationSchema: studentLoginSchema,
       onSubmit: async (values) => {
         const fetchedData = await sendRequest(
-          "http://localhost:3000/api/student/login",
+          `${import.meta.env.VITE_APP_BACKEND_URL}/api/student/login`,
           "POST",
           JSON.stringify(values),
           {
             "Content-Type": "application/json",
           }
         );
-        console.log(fetchedData)
-        auth.login(fetchedData, fetchedData.token)
-        navigate(`/student/dashboard/${fetchedData.studentClass}/${fetchedData.studentId}`)
+        console.log(fetchedData);
+        auth.login(fetchedData, fetchedData.token);
+        navigate(
+          `/student/dashboard/${fetchedData.studentClass}/${fetchedData.studentId}`
+        );
       },
     });
 

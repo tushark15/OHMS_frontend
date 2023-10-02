@@ -59,7 +59,7 @@ const StaffForm = () => {
       if (!auth.token) return;
       try {
         const responseData = await sendRequest(
-          "http://localhost:3000/api/staff/addStaff",
+          `${import.meta.env.VITE_APP_BACKEND_URL}/api/staff/addStaff`,
           "POST",
           JSON.stringify(modifiedValues),
           {
@@ -75,10 +75,10 @@ const StaffForm = () => {
     },
   });
   const fetchData = async () => {
-    if(!auth.token) return;
+    if (!auth.token) return;
     try {
       const fetchedData = await sendRequest(
-        `http://localhost:3000/api/school/${schoolId}`,
+        `${import.meta.env.VITE_APP_BACKEND_URL}/api/school/${schoolId}`,
         "GET",
         null,
         { Authorization: "Bearer " + auth.token }

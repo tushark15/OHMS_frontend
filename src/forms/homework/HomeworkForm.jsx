@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Form, Button, Row, Col, Spinner } from "react-bootstrap"; 
+import { Form, Button, Row, Col, Spinner } from "react-bootstrap";
 import FileUpload from "../../homework/FileUpload";
 import { useFormik } from "formik";
 import { homeworkSchema } from "../schemas";
@@ -23,7 +23,7 @@ const HomeworkForm = (props) => {
   const { schoolId } = useParams();
   const [selectedSubject, setSelectedSubject] = useState("");
   const [file, setFile] = useState(null);
-  const [isLoading, setIsLoading] = useState(false); 
+  const [isLoading, setIsLoading] = useState(false);
   const currentDate = new Date();
   const day = currentDate.getDate();
   const month = currentDate.getMonth() + 1;
@@ -44,7 +44,7 @@ const HomeworkForm = (props) => {
     initialValues: initialValues,
     validationSchema: homeworkSchema,
     onSubmit: async (values) => {
-      setIsLoading(true); 
+      setIsLoading(true);
       formData.append("homework", values.homework);
       formData.append("schoolClass", values.schoolClass);
       formData.append("classSubject", values.classSubject);
@@ -57,7 +57,7 @@ const HomeworkForm = (props) => {
       if (!auth.token) return;
       try {
         const responseData = await sendRequest(
-          "http://localhost:3000/api/homework",
+          `${import.meta.env.VITE_APP_BACKEND_URL}/api/homework`,
           "POST",
           formData,
           {
@@ -67,10 +67,10 @@ const HomeworkForm = (props) => {
         setSelectedSubject("");
         setFile(null);
       } catch (err) {
-        setIsLoading(false); 
+        setIsLoading(false);
       }
       resetForm();
-      setIsLoading(false); 
+      setIsLoading(false);
     },
   });
 
@@ -99,12 +99,15 @@ const HomeworkForm = (props) => {
 
   return (
     <div style={{ width: "90%" }}>
-      {error && <ErrorModal error={error} onClose={clearError} onClearError={resetForm} />}
-      <Form noValidate onSubmit={handleSubmit}>
-        <FileUpload
-          sendFile={recieveFile}
-          for="Homework"
+      {error && (
+        <ErrorModal
+          error={error}
+          onClose={clearError}
+          onClearError={resetForm}
         />
+      )}
+      <Form noValidate onSubmit={handleSubmit}>
+        <FileUpload sendFile={recieveFile} for="Homework" />
         <Row>
           <Form.Group as={Col} controlId="classSubject" className="mb-4">
             <Form.Label>Select Subject</Form.Label>

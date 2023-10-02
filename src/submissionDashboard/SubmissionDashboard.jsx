@@ -13,7 +13,7 @@ const SubmissionDashboard = () => {
     if (!auth.token) return;
     try {
       const response = await sendRequest(
-        `http://localhost:3000/api/submission/${studentId}`,
+        `${import.meta.env.VITE_APP_BACKEND_URL}/api/submission/${studentId}`,
         "GET",
         null,
         { Authorization: "Bearer " + auth.token }

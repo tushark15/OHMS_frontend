@@ -6,15 +6,15 @@ import { useAuth } from "../../hooks/auth-hook";
 
 const StaffItem = (props) => {
   const { error, sendRequest, clearError } = useHttpClient();
-  const auth = useAuth()
+  const auth = useAuth();
 
   const handleDeleteStaff = async (id) => {
-    if(!auth.token) return
+    if (!auth.token) return;
     const responseData = await sendRequest(
-      `http://localhost:3000/api/staff/${id}`,
+      `${import.meta.env.VITE_APP_BACKEND_URL}/api/staff/${id}`,
       "DELETE",
       null,
-      {Authorization: "Bearer " + auth.token}
+      { Authorization: "Bearer " + auth.token }
     );
     props.onDelete(props.id);
   };

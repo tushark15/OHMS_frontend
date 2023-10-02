@@ -18,7 +18,7 @@ const ClassDashboard = () => {
   const [currentClassSubjects, setCurrentClassSubjects] = useState({});
   const [classExists, setClassExists] = useState(false);
   const [currentStaff, setCurrentStaff] = useState({});
-  const [isLoading, setIsLoading] = useState(true); 
+  const [isLoading, setIsLoading] = useState(true);
 
   const { error, sendRequest, clearError } = useHttpClient();
 
@@ -27,7 +27,7 @@ const ClassDashboard = () => {
 
     try {
       const fetchedData = await sendRequest(
-        `http://localhost:3000/api/school/${schoolId}`,
+        `${import.meta.env.VITE_APP_BACKEND_URL}/api/school/${schoolId}`,
         "GET",
         null,
         { Authorization: "Bearer " + auth.token }
@@ -43,7 +43,9 @@ const ClassDashboard = () => {
     if (!auth.token) return;
     try {
       const fetchedData = await sendRequest(
-        `http://localhost:3000/api/student/${schoolId}/${schoolClass}`,
+        `${
+          import.meta.env.VITE_APP_BACKEND_URL
+        }/api/student/${schoolId}/${schoolClass}`,
         "GET",
         null,
         { Authorization: "Bearer " + auth.token }
@@ -83,7 +85,7 @@ const ClassDashboard = () => {
     if (!auth.token) return;
     try {
       const responseData = await sendRequest(
-        `http://localhost:3000/api/student/${id}`,
+        `${import.meta.env.VITE_APP_BACKEND_URL}/api/student/${id}`,
         "DELETE",
         null,
         { Authorization: "Bearer " + auth.token }

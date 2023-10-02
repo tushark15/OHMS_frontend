@@ -19,7 +19,7 @@ const HomeworkCard = (props) => {
   const handleDownload = async (id) => {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/homework/download/${id}`,
+        `${import.meta.env.VITE_APP_BACKEND_URL}/api/homework/download/${id}`,
         {
           method: "GET",
           headers: {
@@ -145,7 +145,13 @@ const HomeworkCard = (props) => {
         </Card.Footer>
         {downloadError && <p style={{ color: "red" }}>{downloadError}</p>}
       </Card>
-      {submissionForm && <Submission show={submissionForm} setSubmissionForm={setSubmissionForm} homeworkId={props.id}/>}
+      {submissionForm && (
+        <Submission
+          show={submissionForm}
+          setSubmissionForm={setSubmissionForm}
+          homeworkId={props.id}
+        />
+      )}
     </>
   );
 };

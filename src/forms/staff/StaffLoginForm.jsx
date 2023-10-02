@@ -17,6 +17,7 @@ const initialValues = {
 const StaffLoginForm = (props) => {
   const auth = useAuth();
   const navigate = useNavigate();
+  const backendURL = import.meta.env.VITE_APP_BACKEND_URL;
   const { error, sendRequest, clearError } = useHttpClient();
   const {
     values,
@@ -30,20 +31,23 @@ const StaffLoginForm = (props) => {
     initialValues: initialValues,
     validationSchema: staffLoginSchema,
     onSubmit: async (values) => {
+      console.log(backendURL);
       try {
         const responseData = await sendRequest(
-          "http://localhost:3000/api/staff/login",
+          `${import.meta.env.VITE_APP_BACKEND_URL}/api/staff/login`,
           "POST",
           JSON.stringify(values),
           {
             "Content-Type": "application/json",
           }
         );
-        auth.login(responseData.exisitingStaff, responseData.token)
-        navigate(`/staff/school/dashboard/${responseData.exisitingStaff.schoolId}`);
+        auth.login(responseData.exisitingStaff, responseData.token);
+        navigate(
+          `/staff/school/dashboard/${responseData.exisitingStaff.schoolId}`
+        );
         window.location.reload();
       } catch (err) {
-        console.error(err)
+        console.error(err);
       }
     },
   });

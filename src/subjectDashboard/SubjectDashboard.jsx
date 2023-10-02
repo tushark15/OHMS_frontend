@@ -12,13 +12,13 @@ export function capitalizeFirstLetter(word) {
 
 const SubjectDashboard = () => {
   const { subject } = useParams();
-  const formattedSubject = subject.replace(/ /g, '_');
+  const formattedSubject = subject.replace(/ /g, "_");
   const auth = useAuth();
   const { error, sendRequest, clearError } = useHttpClient();
   const [currentClassSubjects, setCurrentClassSubjects] = useState([]);
   const [subjectExists, setSubjectExists] = useState(false);
   const [homework, setHomework] = useState([]);
-  const [isLoading, setIsLoading] = useState(true); 
+  const [isLoading, setIsLoading] = useState(true);
   const currentClass = auth.user.studentClass;
 
   const fetchSchoolData = async () => {
@@ -26,7 +26,9 @@ const SubjectDashboard = () => {
 
     try {
       const fetchedData = await sendRequest(
-        `http://localhost:3000/api/school/${auth.user.schoolId}`,
+        `${import.meta.env.VITE_APP_BACKEND_URL}/api/school/${
+          auth.user.schoolId
+        }`,
         "GET",
         null,
         { Authorization: "Bearer " + auth.token }
@@ -41,13 +43,15 @@ const SubjectDashboard = () => {
     if (!auth.token) return;
     try {
       const fetchedData = await sendRequest(
-        `http://localhost:3000/api/homework/${auth.user.schoolId}/${currentClass}`,
+        `${import.meta.env.VITE_APP_BACKEND_URL}/api/homework/${
+          auth.user.schoolId
+        }/${currentClass}`,
         "GET",
         null,
         { Authorization: "Bearer " + auth.token }
       );
       setHomework(fetchedData);
-      setIsLoading(false); 
+      setIsLoading(false);
     } catch (err) {
       console.log(err);
     }
@@ -72,7 +76,6 @@ const SubjectDashboard = () => {
   );
 
   newHomework.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
-
 
   const oldHomework = homework.filter(
     (eachHomework) =>

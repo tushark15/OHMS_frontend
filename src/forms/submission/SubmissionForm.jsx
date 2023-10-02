@@ -55,7 +55,7 @@ const SubmissionForm = (props) => {
       if (!auth.token) return;
       try {
         const responseData = await sendRequest(
-          "http://localhost:3000/api/submission",
+          `${import.meta.env.VITE_APP_BACKEND_URL}/api/submission`,
           "POST",
           formData,
           {

@@ -9,7 +9,7 @@ const StudentDashboard = () => {
   const { studentClass, studentId } = useParams();
   const [responseData, setResponseData] = useState({});
   const [subjects, setSubjects] = useState([]);
-  const [isLoading, setIsLoading] = useState(true); 
+  const [isLoading, setIsLoading] = useState(true);
   const { error, sendRequest, clearError } = useHttpClient();
   const auth = useAuth();
 
@@ -17,7 +17,7 @@ const StudentDashboard = () => {
     if (!auth.token) return;
     try {
       const fetchedData = await sendRequest(
-        `http://localhost:3000/api/student/${studentId}`,
+        `${import.meta.env.VITE_APP_BACKEND_URL}/api/student/${studentId}`,
         "GET",
         null,
         { Authorization: "Bearer " + auth.token }
@@ -30,13 +30,15 @@ const StudentDashboard = () => {
     if (!auth.token) return;
     try {
       const fetchedData = await sendRequest(
-        `http://localhost:3000/api/school/${responseData.schoolId}`,
+        `${import.meta.env.VITE_APP_BACKEND_URL}/api/school/${
+          responseData.schoolId
+        }`,
         "GET",
         null,
         { Authorization: "Bearer " + auth.token }
       );
       setSubjects(fetchedData.classSubjects[studentClass]);
-      setIsLoading(false); 
+      setIsLoading(false);
     } catch (err) {}
   };
 

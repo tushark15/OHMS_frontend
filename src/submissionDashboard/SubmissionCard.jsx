@@ -16,7 +16,7 @@ const SubmissionCard = (props) => {
   const handleSubmissionDownload = async (id) => {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/submission/download/${id}`,
+        `${import.meta.env.VITE_APP_BACKEND_URL}/api/submission/download/${id}`,
         {
           method: "GET",
           headers: {
