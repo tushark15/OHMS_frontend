@@ -50,7 +50,7 @@ const StaffSignupForm = (props) => {
           }
         );
         auth.login(responseData.createdStaffAdmin, responseData.token)
-        navigate("/staff/school");
+        navigate(`/staff/school/${values.schoolId}`);
       } catch (err) {}
     },
   });

@@ -53,8 +53,8 @@ export const schoolSchema = object({
   schoolEmailSuffix: string()
     .test(
       "valid-suffix",
-      "Invalid email suffix. Suffix should be in the form 'example.in'",
-      (val) => /^[^.]+\..+$/.test(val)
+      "Invalid email suffix. Suffix should be in the form '@example.in'",
+      (val) => /^@[^.]+\.[^.]+$/.test(val)
     )
     .required("School Email Suffix is required"),
   schoolClasses: array()

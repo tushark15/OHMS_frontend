@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
@@ -56,10 +56,10 @@ export const initialValues = {
 };
 
 const SchoolForm = () => {
+  const  {schoolId} = useParams();
   const { error, sendRequest, clearError } = useHttpClient();
   const navigate = useNavigate();
   const auth = useAuth();
-  console.log(auth.token)
   const {
     values,
     handleChange,
@@ -90,6 +90,7 @@ const SchoolForm = () => {
       }
     },
   });
+  values.schoolId = schoolId;
 
   const handleClasses = (selectedOptions) => {
     setValues({ ...values, schoolClasses: selectedOptions });
@@ -136,19 +137,10 @@ const SchoolForm = () => {
                 <Form.Group as={Col} controlId="schoolName" className="mb-4">
                   <Form.Label>School ID</Form.Label>
                   <Form.Control
-                    type="text"
-                    placeholder="Enter School ID"
-                    name="schoolId"
-                    value={values.schoolId}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    isValid={touched.schoolId && !errors.schoolId}
-                    isInvalid={!!errors.schoolId && touched.schoolId}
+                    readOnly
+                    plaintext
+                    defaultValue={schoolId}
                   />
-                  <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-                  <Form.Control.Feedback type="invalid">
-                    {errors.schoolId}
-                  </Form.Control.Feedback>
                 </Form.Group>
               </Row>
               <Form.Group className="mb-4" controlId="schoolAddress">
