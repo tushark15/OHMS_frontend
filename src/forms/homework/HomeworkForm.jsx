@@ -6,6 +6,7 @@ import { homeworkSchema } from "../schemas";
 import { useParams } from "react-router-dom";
 import { useHttpClient } from "../../hooks/http-hook";
 import { useAuth } from "../../hooks/auth-hook";
+import ErrorModal from "../../components/ErrorModal";
 
 const initialValues = {
   schoolClass: "",
@@ -98,6 +99,7 @@ const HomeworkForm = (props) => {
 
   return (
     <div style={{ width: "90%" }}>
+      {error && <ErrorModal error={error} onClose={clearError} onClearError={resetForm} />}
       <Form noValidate onSubmit={handleSubmit}>
         <FileUpload
           sendFile={recieveFile}

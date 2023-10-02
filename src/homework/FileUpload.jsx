@@ -26,10 +26,9 @@ const img = {
   height: "100px",
 };
 
-
-
 function FileUpload(props) {
   const [file, setFile] = useState(null);
+  const [fileSizeError, setFileSizeError] = useState(false);
 
   const { getRootProps, getInputProps } = useDropzone({
     accept: {
@@ -45,12 +44,18 @@ function FileUpload(props) {
     onDrop: (acceptedFiles) => {
       if (acceptedFiles.length > 0) {
         const selectedFile = acceptedFiles[0];
-        setFile(
-          Object.assign(selectedFile, {
-            preview: URL.createObjectURL(selectedFile),
-          })
-        );
-        props.sendFile(selectedFile)
+        if (selectedFile.size > 5 * 1024 * 1024) {
+          // 5MB limit
+          setFileSizeError(true);
+        } else {
+          setFileSizeError(false);
+          setFile(
+            Object.assign(selectedFile, {
+              preview: URL.createObjectURL(selectedFile),
+            })
+          );
+          props.sendFile(selectedFile);
+        }
       }
     },
   });
@@ -62,7 +67,7 @@ function FileUpload(props) {
   }, [file]);
 
   return (
-    <section className="container" style={{width:"90%"}}>
+    <section className="container" style={{ width: "90%" }}>
       <div
         {...getRootProps({
           className: "dropzone d-flex justify-content-center p-5",
@@ -72,6 +77,13 @@ function FileUpload(props) {
         <input {...getInputProps()} />
         <p>{`Drag 'n' drop ${props.for}, or click to select ${props.for}`}</p>
       </div>
+      {fileSizeError && (
+        <div style={{
+          color: "red",
+        }}>
+          File size exceeds the maximum allowed size (5MB).
+        </div>
+      )}
       {file && (
         <div style={thumb}>
           {file.type === "image/png" || file.type === "image/jpeg" ? (

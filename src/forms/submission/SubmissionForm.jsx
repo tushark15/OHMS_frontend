@@ -5,7 +5,8 @@ import { useAuth } from "../../hooks/auth-hook";
 import { useFormik } from "formik";
 import { submissionSchema } from "../schemas";
 import { useParams } from "react-router-dom";
-import  {useHttpClient} from "../../hooks/http-hook";
+import { useHttpClient } from "../../hooks/http-hook";
+import ErrorModal from "../../components/ErrorModal";
 
 const initialValues = {
   schoolClass: "",
@@ -15,14 +16,14 @@ const initialValues = {
   submission: null,
   note: "",
   schoolId: 0,
-  homeworkId: ""
+  homeworkId: "",
 };
 
 const SubmissionForm = (props) => {
   const [file, setFile] = useState(null);
   const { subject } = useParams();
   const auth = useAuth();
-  const {error, sendRequest, clearError} = useHttpClient();
+  const { error, sendRequest, clearError } = useHttpClient();
   const currentDate = new Date();
   const day = currentDate.getDate();
   const month = currentDate.getMonth() + 1;
@@ -48,7 +49,7 @@ const SubmissionForm = (props) => {
       formData.append("classSubject", values.classSubject);
       formData.append("uploadDate", values.uploadDate);
       formData.append("studentId", values.studentId);
-      formData.append("homeworkId", values.homeworkId)
+      formData.append("homeworkId", values.homeworkId);
       formData.append("note", values.note);
       formData.append("schoolId", values.schoolId);
       if (!auth.token) return;
@@ -63,9 +64,9 @@ const SubmissionForm = (props) => {
         );
         setFile(null);
         resetForm();
-        props.onHide()
+        props.onHide();
       } catch (err) {
-        console.log(err)
+        console.log(err);
       }
     },
   });
@@ -96,6 +97,13 @@ const SubmissionForm = (props) => {
         <Modal.Title id="submission_form">Submit response</Modal.Title>
       </Modal.Header>
       <Modal.Body>
+        {error && (
+          <ErrorModal
+            error={error}
+            onClose={clearError}
+            onClearError={resetForm}
+          />
+        )}
         <Form noValidate onSubmit={handleSubmit}>
           <FileUpload sendFile={recieveFile} for="Response" />
 
