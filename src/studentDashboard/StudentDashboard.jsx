@@ -56,6 +56,7 @@ const StudentDashboard = () => {
         className="d-flex flex-column justify-content-center align-items-center"
         style={{ height: "100vh" }}
       >
+        {error && <ErrorModal error={error} onClose={clearError} />}
         <Spinner animation="border" role="status">
           <span className="visually-hidden">Loading...</span>
         </Spinner>
@@ -74,6 +75,8 @@ const StudentDashboard = () => {
           marginRight: "0",
         }}
       >
+        {error && <ErrorModal error={error} onClose={clearError} />}
+
         {subjects.map((subject) => {
           return (
             <SubjectDisplayCard key={subject.value} subject={subject.label} />

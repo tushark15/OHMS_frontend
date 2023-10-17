@@ -3,6 +3,7 @@ import { Card, Spinner } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useHttpClient } from "../hooks/http-hook";
 import { useAuth } from "../hooks/auth-hook";
+import ErrorModal from "../components/ErrorModal";
 
 const ClassDisplayCard = (props) => {
   const navigate = useNavigate();
@@ -36,6 +37,8 @@ const ClassDisplayCard = (props) => {
   };
 
   return (
+    <>
+    {error && <ErrorModal error={error} onClose={clearError} />}
     <Card
       key={props.schoolClass.value}
       style={{
@@ -59,6 +62,7 @@ const ClassDisplayCard = (props) => {
         </Card.Text>
       </Card.Body>
     </Card>
+    </>
   );
 };
 

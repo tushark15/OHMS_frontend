@@ -95,6 +95,7 @@ const SubjectDashboard = () => {
             marginTop: "12vh",
           }}
         >
+          {error && <ErrorModal error={error} onClose={clearError} />}
           <Spinner animation="border" role="status">
             <span className="visually-hidden">Loading...</span>
           </Spinner>

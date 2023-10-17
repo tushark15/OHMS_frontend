@@ -31,6 +31,7 @@ const StaffList = (props) => {
   if (isLoading) {
     return (
       <div className="d-flex justify-content-center mt-4">
+      {error && <ErrorModal error={error} onClose={clearError} />}
         <Spinner animation="border" role="status">
           <span className="visually-hidden">Loading...</span>
         </Spinner>

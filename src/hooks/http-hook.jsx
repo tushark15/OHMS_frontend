@@ -9,7 +9,11 @@ export const useHttpClient = () => {
         const response = await fetch(url, {method, body, headers});
         const responseData = await response.json();
         if (!response.ok) {
-          throw new Error(responseData.message);
+          if (response.status === 429) {
+            throw new Error("Too many requests, please try again later");
+          } else {
+            throw new Error(responseData.message);
+          }
         }
         return responseData;
       } catch (err) {

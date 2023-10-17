@@ -73,6 +73,13 @@ const studentForm = (props) => {
         <Modal.Title id="student_form">Student Form</Modal.Title>
       </Modal.Header>
       <Modal.Body>
+        {error && (
+          <ErrorModal
+            error={error}
+            onClose={clearError}
+            onClearError={resetForm}
+          />
+        )}
         <Form noValidate onSubmit={handleSubmit}>
           <Row>
             <Form.Group as={Col} controlId="studentName" className="mb-4">
@@ -206,6 +213,13 @@ const studentForm = (props) => {
           <Button type="submit" disabled={isLoading}>
             {isLoading ? (
               <>
+                {error && (
+                  <ErrorModal
+                    error={error}
+                    onClose={clearError}
+                    onClearError={resetForm}
+                  />
+                )}
                 <Spinner
                   as="span"
                   animation="border"

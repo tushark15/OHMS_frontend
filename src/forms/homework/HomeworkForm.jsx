@@ -176,6 +176,13 @@ const HomeworkForm = (props) => {
         <Button type="submit" disabled={isLoading}>
           {isLoading ? (
             <>
+              {error && (
+                <ErrorModal
+                  error={error}
+                  onClose={clearError}
+                  onClearError={resetForm}
+                />
+              )}
               <Spinner
                 as="span"
                 animation="border"
