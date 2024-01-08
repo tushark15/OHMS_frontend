@@ -1,0 +1,26 @@
+.mainContainer{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100vw;
+    /* gap:"5em" !important; */
+    @media(max-width: 768px){
+        flex-direction: column;
+    }
+}
+
+.gap-4{
+    gap: 10rem !important;
+    @media(max-width: 808px){
+        gap: 3rem !important;
+    }
+}
+
+.cardDiv{
+    width: 20rem;
+    @media(max-width: 768px){
+        width: 10em;
+    }
+}

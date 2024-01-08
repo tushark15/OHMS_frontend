@@ -4,7 +4,7 @@ import { Card } from "react-bootstrap";
 const StaffLoginDemo = () => {
   return (
     <Card
-      style={{ width: "45vw", height: "auto", marginBottom: "2rem" }}
+      style={{ width: "18rem", height: "auto", marginBottom: "2rem", marginTop: "2rem" }}
       className="shadow-lg rounded-3 form-card border border-0"
     >
       <Card.Body>

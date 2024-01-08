@@ -2,15 +2,14 @@ import React from "react";
 import Card from "react-bootstrap/Card";
 import student from "../images/student.jpg";
 import teacher from "../images/teacher.jpg";
+import "./Home.css";
 const Home = () => {
   return (
     <div
-      className="d-flex flex-row justify-content-center  align-items-center gap-5"
-      style={{ height: "100vh" }}
+      className="mainContainer gap-4"
     >
-      <div style={{ height: "auto" }}>
+      <div className="cardDiv">
         <Card
-          style={{ width: "25vw", height: "auto" }}
           className="shadow-lg rounded-3 border border-0"
         >
           <Card.Body>
@@ -24,9 +23,8 @@ const Home = () => {
           </Card.Body>
         </Card>
       </div>
-      <div style={{ height: "auto", marginLeft: "10rem" }}>
+      <div className="cardDiv">
         <Card
-          style={{ width: "25vw", height: "auto" }}
           className="shadow-lg rounded-3 border border-0"
         >
           <Card.Body>

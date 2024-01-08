@@ -130,7 +130,7 @@ const ClassDashboard = () => {
               currentClassSubjects={currentClassSubjects}
             />
           </div>
-          <div className="d-flex flex-row gap-4">
+          <div className="d-flex flex-row gap-5">
             {students.length === 0 ? (
               <Alert variant="danger">
                 There are no students in the class. Add students!
