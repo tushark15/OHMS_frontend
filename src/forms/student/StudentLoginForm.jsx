@@ -7,13 +7,15 @@ import { studentLoginSchema } from "../schemas";
 import { useHttpClient } from "../../hooks/http-hook";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/auth-hook";
+import StudentLoginDemo from "../../demo/StudentLoginDemo";
+import ErrorModal from "../../components/ErrorModal";
 
 const initialValues = {
   studentId: 0,
   studentPassword: "",
 };
 
-const StudentLoginForm = (props) => {
+const StudentLoginForm = () => {
   const navigate = useNavigate();
   const { error, sendRequest, clearError } = useHttpClient();
   const auth = useAuth();
@@ -43,6 +45,14 @@ const StudentLoginForm = (props) => {
       className="d-flex flex-column justify-content-center align-items-center"
       style={{ height: "100vh" }}
     >
+      {error && (
+        <ErrorModal
+          error={error}
+          onClose={clearError}
+          onClearError={resetForm}
+        />
+      )}
+      <StudentLoginDemo/>
       <Card
         style={{ width: "45vw", height: "auto" }}
         className="shadow-lg rounded-3 form-card border border-0"

@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { useHttpClient } from "../../hooks/http-hook";
 import ErrorModal from "../../components/ErrorModal";
 import { useAuth } from "../../hooks/auth-hook";
+import StaffLoginDemo from "../../demo/StaffLoginDemo";
 
 const initialValues = {
   staffEmail: "",
@@ -17,7 +18,6 @@ const initialValues = {
 const StaffLoginForm = (props) => {
   const auth = useAuth();
   const navigate = useNavigate();
-  const backendURL = import.meta.env.VITE_APP_BACKEND_URL;
   const { error, sendRequest, clearError } = useHttpClient();
   const {
     values,
@@ -63,6 +63,7 @@ const StaffLoginForm = (props) => {
           onClearError={resetForm}
         />
       )}
+      <StaffLoginDemo/>
       <Card
         style={{ width: "45vw", height: "auto" }}
         className="shadow-lg rounded-3 form-card border border-0"
