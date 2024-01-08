@@ -31,7 +31,6 @@ const StaffLoginForm = (props) => {
     initialValues: initialValues,
     validationSchema: staffLoginSchema,
     onSubmit: async (values) => {
-      console.log(backendURL);
       try {
         const responseData = await sendRequest(
           `${import.meta.env.VITE_APP_BACKEND_URL}/api/staff/login`,

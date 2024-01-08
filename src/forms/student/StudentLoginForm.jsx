@@ -13,7 +13,7 @@ const initialValues = {
   studentPassword: "",
 };
 
-const StaffLoginForm = (props) => {
+const StudentLoginForm = (props) => {
   const navigate = useNavigate();
   const { error, sendRequest, clearError } = useHttpClient();
   const auth = useAuth();
@@ -30,11 +30,11 @@ const StaffLoginForm = (props) => {
             "Content-Type": "application/json",
           }
         );
-        console.log(fetchedData);
         auth.login(fetchedData, fetchedData.token);
         navigate(
           `/student/dashboard/${fetchedData.studentClass}/${fetchedData.studentId}`
         );
+        window.location.reload();
       },
     });
 
@@ -100,4 +100,4 @@ const StaffLoginForm = (props) => {
   );
 };
 
-export default StaffLoginForm;
+export default StudentLoginForm;

@@ -41,9 +41,9 @@ const Navlinks = ({ currentStaff }) => {
           </Nav.Link>
         </Nav>
         <Nav className="">
-          <Nav.Link href="/" className="fs-5" onClick={auth.logout}>
+          {auth.user && (auth.user._id || auth.user.studentId) && <Nav.Link href="/" className="fs-5" onClick={auth.logout}>
             Logout
-          </Nav.Link>
+          </Nav.Link>}
         </Nav>
       </Navbar.Collapse>
     </Container>
