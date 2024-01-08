@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import SubjectDisplayCard from "./SubjectDisplayCard";
 import { useAuth } from "../hooks/auth-hook";
 import { Spinner } from "react-bootstrap";
+import ErrorModal from "../components/ErrorModal";
 
 const StudentDashboard = () => {
   const { studentClass, studentId } = useParams();
