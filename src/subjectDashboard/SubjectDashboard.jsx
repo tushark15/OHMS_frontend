@@ -114,7 +114,7 @@ const SubjectDashboard = () => {
             >
               <h2>{capitalizeFirstLetter(formattedSubject)}</h2>
               {error && <ErrorModal error={error} onClose={clearError} />}
-              {newHomework.length > 0 && (
+              {newHomework.length > 0 ? (
                 <>
                   <h2>New Homework (Today)</h2>
                   {newHomework.map((eachHomework) => (
@@ -129,6 +129,8 @@ const SubjectDashboard = () => {
                     />
                   ))}
                 </>
+              ) : (
+                <Alert variant="danger" style={{width:"fit-content", fontSize:"large"}} className="d-flex justify-content-center align-items-center">⛔No New Homework</Alert>
               )}
               {oldHomework.length > 0 && (
                 <>
